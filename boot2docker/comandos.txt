@@ -1,3 +1,7 @@
+Fecha: 17/11/2017
+
+-> Parte 1: Comandos
+
 Paginas referencia: 
 1. https://github.com/robrich/docker-hands-on-workshop
 2. http://mmc.geofisica.unam.mx/acl/Textos/MaquinasVirtuales/CursoMaquinasVirtuales/Contenedores/Docker.pdf
@@ -28,4 +32,31 @@ Lista de comandos de la refereencia 1 llevados a cabo en su respectivo orden:
 9. docker run learn/ping ping inf.uva.es
 10. docker inspect learn/ping
 
+-> Parte 2: Dockerfile
 
+1. nano Dockerfile
+
+	FROM ubuntu:latest
+	RUN apt-get -y update
+	RUN apt-get -y upgrade
+	RUN apt-get -y install git python
+	RUN echo "Hola mundo" >> index.html
+
+	EXPOSE 80
+	CMD ["python", "-m", "SimpleHTTPServer", "80"]
+
+2. docker build -t learn/webserver .
+3. docker run -P learn/webserver	
+
+-> Parte 3: Guardar y cargar imagenes
+
+* Guardar/cargar imágenes
+
+1. docker save learn/ping > /tmp/imagen.tar
+2. docker load < /tmp/imagen.tar
+
+* Exportar/importar conten.
+
+3. docker ps -a
+4. docker export 698 > /tmp/contenedor.tar
+5. cat /tmp/contenedor.tar | docker import - learn/ping-export:latest
