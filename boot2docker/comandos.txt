@@ -1,0 +1,32 @@
+Fecha: 17/11/2017
+
+Paginas referencia: 
+https://github.com/robrich/docker-hands-on-workshop
+http://mmc.geofisica.unam.mx/acl/Textos/MaquinasVirtuales/CursoMaquinasVirtuales/Contenedores/Docker.pdf
+
+Lista de comandos en su respectivo orden:
+1. docker search tutorial
+2. docker pull learn/tutorial
+3. docker run learn/tutorial echo “Hola mundo”
+4. docker run learn/tutorial apt-get install -y ping
+5. docker run learn/tutorial apt-get install -y ping
+6. docker ps
+7. docker ps -a
+
+		CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+		docker@default:~$
+		docker@default:~$ docker ps -a
+		CONTAINER ID        IMAGE                     COMMAND                  CREATED             STATUS                       PORTS                     NAMES
+		6ed16aa91445        learn/tutorial            "apt-get install -y p"   39 seconds ago      Exited (0) 37 seconds ago                              sharp_aryabhata
+		b671dec4c0c1        learn/tutorial            "echo xxx"               54 seconds ago      Exited (0) 53 seconds ago                              hopeful_wright
+		78ed60f0e8ec        learn/tutorial            "echo 'Hola mundo'"      59 seconds ago      Exited (0) 58 seconds ago                              naughty_stallman
+		29dde0958c5b        postgres:latest           "docker-entrypoint.sh"   7 months ago        Exited (137) 24 hours ago    0.0.0.0:32768->5432/tcp   postgres
+		d48b397e3046        ubuntu                    "/bin/bash"              20 months ago       Exited (0) 20 months ago                               h2
+		2eba80452e77        ubuntu                    "/bin/bash"              20 months ago       Exited (0) 20 months ago                               h1
+		...
+
+8. docker commit 6ed learn/ping
+9. docker run learn/ping ping inf.uva.es
+10. docker inspect learn/ping
+
+
