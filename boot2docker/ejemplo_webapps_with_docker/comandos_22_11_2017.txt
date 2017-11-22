@@ -1,0 +1,49 @@
+Fecha: 22/11/2017
+
+
+
+Paginas referencia: 
+https://github.com/docker/labs
+
+Comandos
+
+Chapter: Webapps with Docker 
+URL: https://github.com/docker/labs/blob/master/beginner/chapters/webapps.md
+
+|-> Parte 1: Run a static website in a container
+
+docker run -d dockersamples/static-site
+docker ps
+docker stop a7a0e504ca3e
+docker rm   a7a0e504ca3e
+docker run --name static-site -e AUTHOR="Your Name" -d -P dockersamples/static-site
+
+"Your Name" = "tigarto"
+-> docker run --name static-site -e AUTHOR="tigarto" -d -P dockersamples/static-site
+
+docker port static-site
+443/tcp -> 0.0.0.0:32768
+80/tcp -> 0.0.0.0:32769
+
+-> En la consola de boot2docker: docker-machine ip default
+-> En la consola de la maquin virtual de linux: ifconfig
+-> En el browser: http://<YOUR_IPADDRESS>:[YOUR_PORT_FOR 80/tcp]
+
+<YOUR_IPADDRESS> = 192.168.99.100
+[YOUR_PORT_FOR 80/tcp] = 32769
+http://192.168.99.100:32769
+
+docker run --name static-site-2 -e AUTHOR="Your Name" -d -p 8888:80 dockersamples/static-site
+"Your Name" = "helpu1409"
+docker run --name static-site-2 -e AUTHOR="helpu1409" -d -p 8888:80 dockersamples/static-site
+
+docker stop static-site
+docker rm static-site
+docker rm -f static-site-2
+docker ps
+
+|-> Parte 2: Docker Images
+
+docker images
+docker pull ubuntu:12.04
+docker pull ubuntu
