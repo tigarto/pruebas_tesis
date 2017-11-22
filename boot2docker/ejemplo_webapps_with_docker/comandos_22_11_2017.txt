@@ -42,8 +42,26 @@ docker rm static-site
 docker rm -f static-site-2
 docker ps
 
-|-> Parte 2: Docker Images
+|-> Parte 2: Docker Images **
 
 docker images
 docker pull ubuntu:12.04
 docker pull ubuntu
+
+|-> Parte 4: Build the image
+
+-> En la consola: docker build -t <YOUR_USERNAME>/myfirstapp .
+
+<YOUR_USERNAME> = tigarto
+
+docker build -t <YOUR_USERNAME>/myfirstapp .
+docker run -p 8888:5000 --name myfirstapp YOUR_USERNAME/myfirstapp
+
+-> En el brower: http://l92.168.99.100:8888
+
+|-> Parte 4: Push your image **
+docker login
+docker push YOUR_USERNAME/myfirstapp
+
+
+** Comandos no ensayados
