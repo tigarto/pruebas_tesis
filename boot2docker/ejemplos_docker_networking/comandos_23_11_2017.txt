@@ -27,3 +27,69 @@ docker network ls
   -> apt-get install bridge-utils
 # List the bridges on your Docker host
   -> brctl show
+# details of the bridge
+ip a
+
+|-> Parte 3: Connect a container
+
+docker run -dt ubuntu sleep infinity
+brctl show
+docker network inspect bridge
+
+|-> Parte 4: Connect a container
+ping 172.17.0.2
+# Get the ID of the container started in the previous step
+docker ps
+# Exec into the container
+docker exec -it <CONTAINER ID> /bin/bash
+# Los siguientes comandos se llevaron a cabo dentro del contenedor
+  apt-get update
+  apt-get install iputils-ping
+  ping www.docker.com
+
+Conclusion:
+This shows that the new container can ping the internet and therefore has a valid and working network configuration.
+
+|-> Parte 5: Configure NAT for external access
+
+docker run --name web1 -d -p 8080:80 nginx
+docker ps
+
+
+
+apt-get install net-tools
+
+ifconfig 
+eth0      Link encap:Ethernet  HWaddr 02:42:ac:11:00:02  
+          inet addr:172.17.0.2  Bcast:0.0.0.0  Mask:255.255.0.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:8289 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:5299 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:26517019 (26.5 MB)  TX bytes:293500 (293.5 KB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+En Kali:
+
+ifconfig 
+...
+
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.139.131  netmask 255.255.255.0  broadcast 192.168.139.255
+        inet6 fe80::20c:29ff:fe21:c9e7  prefixlen 64  scopeid 0x20<link>
+        ether 00:0c:29:21:c9:e7  txqueuelen 1000  (Ethernet)
+        RX packets 129532  bytes 161188512 (153.7 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 64872  bytes 7273760 (6.9 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+En el navegador en kali: http://localhost:8080/ 
+En el navegador en windows: http://192.168.139.131:8080
