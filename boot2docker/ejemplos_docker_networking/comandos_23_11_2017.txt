@@ -1,0 +1,29 @@
+Fecha: 23/11/2017
+
+Paginas referencia: 
+https://github.com/docker/labs
+
+Chapter: Docker Networking Basics 
+URL: https://github.com/docker/labs/blob/master/networking/A1-network-basics.md
+
+|-> Parte 1: The docker network command
+
+docker network
+docker network ls
+docker network inspect <Nombre-red>
+<Nombre-red> = bridge 
+docker network inspect bridge
+docker info
+
+Chapter: Bridge networking
+URL: https://github.com/docker/labs/blob/master/networking/A2-bridge-networking.md
+
+|-> Parte 2: The default bridge network
+
+Key appointement: All networks created with the bridge driver are based on a Linux bridge (a.k.a. a virtual switch).
+
+docker network ls
+# Install the brctl tools
+  -> apt-get install bridge-utils
+# List the bridges on your Docker host
+  -> brctl show
