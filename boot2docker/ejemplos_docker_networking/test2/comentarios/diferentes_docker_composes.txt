@@ -1,0 +1,70 @@
+Problema: Llamando una maquina virtual interactiva
+Solucion: En el siguiente enlace esta la solucion: 
+          https://stackoverflow.com/questions/36249744/interactive-shell-using-docker-compose
+
+
+-------------------------------------------------------------------------------------
+docker-compose1.yml
+-------------------------------------------------------------------------------------
+version: '3'
+services:
+  ubuntu_machine:
+    image: "ubuntu"
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true
+-------------------------------------------------------------------------------------
+Comandos:	
+docker-compose up
+docker ps
+-------------------------------------------------------------------------------------
+*************************************************************************************
+-------------------------------------------------------------------------------------
+docker-compose2.yml
+-------------------------------------------------------------------------------------
+version: '3'
+services:
+  ubuntu_machine1:
+    image: "ubuntu"
+    container_name: ubuntu_machine1
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true
+
+  ubuntu_machine2:
+    image: "ubuntu"
+    container_name: ubuntu_machine2
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true
+
+-------------------------------------------------------------------------------------
+Comandos:	
+docker-compose up
+docker ps
+-------------------------------------------------------------------------------------
+*************************************************************************************
+-------------------------------------------------------------------------------------
+docker-compose3.yml
+-------------------------------------------------------------------------------------
+version: '3'
+services:
+  ubuntu_machine:
+    image: "ubuntu"
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true
+
+-------------------------------------------------------------------------------------
+Comandos:	
+docker-compose scale ubuntu_machine=2
+docker ps
+-------------------------------------------------------------------------------------
+TODO:
+1. ¿Sera que se puede personalizar el nombre de un container generado cuando son varios 
+los que se generan?
+Cosas por mirar luego:
+1. https://docs.docker.com/compose/environment-variables/#the-env-file
+2. https://blog.agchapman.com/using-variables-in-docker-compose-files/
+
+

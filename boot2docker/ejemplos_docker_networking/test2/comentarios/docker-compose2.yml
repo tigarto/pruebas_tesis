@@ -1,0 +1,15 @@
+version: '3'
+services:
+  ubuntu_machine1:
+    image: "ubuntu"
+    container_name: ubuntu_machine1
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true
+
+  ubuntu_machine2:
+    image: "ubuntu"
+    container_name: ubuntu_machine2
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true
