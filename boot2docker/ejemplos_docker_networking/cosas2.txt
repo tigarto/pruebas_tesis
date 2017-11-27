@@ -98,8 +98,38 @@ Creating test3_host_2 ... done
 Creating test3_host_3 ... done
 
 
+
+******************************************************************************
+
+# Se agrega el switch virtual y sus interfaces
+sudo ovs-vsctl add-br s1
+sudo ovs-vsctl add-port s1 s1-eth1 -- set interface s1-eth1 type=internal
+sudo ovs-vsctl add-port s1 s1-eth2 -- set interface s1-eth2 type=internal
+
+# Se listan las cosas 
+sudo ovs-vsctl list-ifaces s1
+
+# Se muestran las descripcion del switch
+sudo ovs-vsctl show   
+
+# Poner a correr las 2 imagenes (en dos consolas diferentes) 
+docker run -it --name=h1 --net=none kalilinux/kali-linux-docker /bin/bash 
+docker run -it --name=h2 --net=none ubuntu /bin/bash 
+# Agregar una nueva interfaz de red al container y atarla a un Open vSwitch bridge
+ovs-docker add-port s1 h1-eth0 h1 10.0.0.1/8 
+ovs-docker add-port s2 h2-eth0 h2 10.0.0.2/8 
+
+
+
+
+
 ......
 
+googel:
+assign ip to container docker docker-compose
+assign ip to container docker 
+
+https://stackoverflow.com/questions/39493490/provide-static-ip-to-docker-containers-via-docker-compose
 
 
 
