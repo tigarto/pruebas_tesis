@@ -1,0 +1,110 @@
+Pendiente:
+}
+
+
+https://github.com/gopher-net/docker-ovs-plugin
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/test3# modprobe openvswitch
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/test3# lsmod | grep open
+openvswitch           118784  0
+nf_nat_ipv6            16384  1 openvswitch
+nf_defrag_ipv6         36864  2 nf_conntrack_ipv6,openvswitch
+nf_nat_ipv4            16384  2 openvswitch,iptable_nat
+nf_nat                 28672  5 xt_nat,openvswitch,nf_nat_ipv6,nf_nat_masquerade_ipv4,nf_nat_ipv4
+nf_conntrack          135168  11 xt_nat,nf_conntrack_ipv6,openvswitch,nf_conntrack_ipv4,ipt_MASQUERADE,nf_conntrack_netlink,nf_nat_ipv6,nf_nat_masquerade_ipv4,xt_conntrack,nf_nat_ipv4,nf_nat
+libcrc32c              16384  3 openvswitch,nf_conntrack,nf_nat
+
+
+k# docker-compose up -d
+Pulling ovs (socketplane/openvswitch:2.3.2)...
+2.3.2: Pulling from socketplane/openvswitch
+a3ed95caeb02: Downloading [==================================================>] a3ed95caeb02: Extracting [==================================================>]  
+....
+702e49cf9b70: Pull complete
+Digest: sha256:ae5486575cae3c686b649ad4e522f06b6003e09fbae9d9786782763d113e27a4
+Status: Downloaded newer image for gophernet/ovs-plugin:latest
+Creating ovsdock_ovs_1 ... 
+Creating ovsdock_plugin_1 ... 
+Creating ovsdock_plugin_1
+Creating ovsdock_ovs_1 ... done
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/ovs_dock# docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+5e483fa9ca1c        bridge              bridge              local
+7a8ef19128fa        host                host                local
+f4b11325426c        none                null                local
+
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/ovs_docm# docker ps
+CONTAINER ID        IMAGE                           COMMAND                  CREATED              STATUS              PORTS               NAMES
+5b14d03f4ca0        socketplane/openvswitch:2.3.2   "/usr/bin/supervisord"   About a minute ago   Up About a minute                       ovsdock_ovs_1
+5cdc2f06e96d        gophernet/ovs-plugin            "docker-ovs-plugin -d"   About a minute ago   Up About a minute                       ovsdock_plugin_1
+
+docker network create -d ovs red_test
+
+
+......
+
+intentemos hacer lo siguiente:
+
+sudo ovs-vsctl add-br s1
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/ovs_dock# ovs-vsctl add-br s1
+ovs-vsctl: unix:/var/run/openvswitch/db.sock: database connection failed (No such file or directory)
+
+Solucion: https://stackoverflow.com/questions/28506053/open-vswitch-database-connection-failure-after-rebooting
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/ovs_dock# /usr/share/openvswitch/scripts/ovs-ctl start
+
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/ovs_dock# sudo ovs-vsctl add-br s1
+sudo ovs-vsctl del-br s1
+
+......
+
+
+Se modifico el nombre del container: --
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/ovs_dock# docker-compose up -d
+Creating ovsdock_ovs_1 ... 
+Creating ovs ... 
+Creating ovsdock_ovs_1
+Creating ovsdock_ovs_1 ... done
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/ovs_dock# docker ps
+CONTAINER ID        IMAGE                           COMMAND                  CREATED             STATUS              PORTS               NAMES
+7154d26c754a        gophernet/ovs-plugin            "docker-ovs-plugin -d"   27 seconds ago      Up 26 seconds                           ovs
+8d6d42617aa3        socketplane/openvswitch:2.3.2   "/usr/bin/supervisord"   27 seconds ago      Up 26 seconds                           ovsdock_ovs_1
+
+
+
+docker network create -d ovs red_test
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/ovs_dock# docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+5e483fa9ca1c        bridge              bridge              local
+7a8ef19128fa        host                host                local
+f4b11325426c        none                null                local
+2a856ea0ca4a        red_test            ovs                 local
+
+
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/test3# docker-compose scale host=3
+WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
+Creating test3_host_1 ... 
+Creating test3_host_2 ... 
+Creating test3_host_3 ... 
+Creating test3_host_1 ... done
+Creating test3_host_2 ... done
+Creating test3_host_3 ... done
+
+
+......
+
+
+
+
+
+
+
+
+
