@@ -1,0 +1,18 @@
+version: '3'
+services:
+  host:
+    image: "ubuntu"
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true
+ 
+networks:
+  default:
+    external:
+      name: red_test
+  
+    
+
+  
+
+
