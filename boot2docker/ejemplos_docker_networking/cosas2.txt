@@ -133,6 +133,8 @@ https://stackoverflow.com/questions/39493490/provide-static-ip-to-docker-contain
 
 
 
+https://docs.docker.com/compose/compose-file/#ipv4_address-ipv6_address
+
 
 
 
