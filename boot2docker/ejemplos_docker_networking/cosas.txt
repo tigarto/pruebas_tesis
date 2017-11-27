@@ -1,0 +1,237 @@
+https://github.com/gopher-net/docker-ovs-plugin
+
+modprobe openvswitch
+cd /mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/
+mkdir test3
+cd test3
+
+https://github.com/gopher-net
+
+por pasos:
+https://developer.ibm.com/recipes/tutorials/using-ovs-bridge-for-docker-networking/
+
+http://cloudgeekz.com/400/how-to-use-openvswitch-with-docker.html
+
+ovs-docker
+https://github.com/openvswitch/ovs/blob/master/utilities/ovs-docker
+
+https://www.youtube.com/watch?v=8HH5arJ-pfw
+https://github.com/openvswitch/ovs/blob/master/utilities/ovs-docker
+
+http://docs.openvswitch.org/en/latest/howto/docker/
+
+
+No lo tenia asi que lo instale: siguiendo: https://www.packtpub.com/mapt/book/networking_and_servers/9781785280955/3/ch03lvl1sec23/open-vswitch
+
+sudo apt-get install openvswitch-switch
+cd /usr/bin
+wget https://github.com/openvswitch/ovs/blob/master/utilities/ovs-docker
+chmod a+rwx ovs-docker
+
+Aqui hay un ejemplo resumido: http://containertutorials.com/network/ovs_docker.html
+
+Otro como que distinto: https://github.com/socketplane/docker-ovs
+http://ewen.mcneill.gen.nz/blog/entry/2014-10-12-finding-docker-containers-connection-to-openvswitch/
+
+
+http://docs.openvswitch.org/en/latest/howto/docker/
+
+https://sreeninet.wordpress.com/2014/01/02/openvswitch-and-ovsdb/
+https://github.com/socketplane/docker-ovs
+
+csie.nqu.edu.tw/smallko/sdn/firefox_ubuntu.htm
+http://csie.nqu.edu.tw/smallko/sdn/sdn.htm
+
+Noviembre 25
+
+http://gettopical.com/docker?src=twitter
+https://github.com/discourse/discourse_docker
+https://github.com/chaconnewu/awesome-augmented/blob/master/original_awesomes/awesome-docker.md
+http://fbevmware.blogspot.com.co/2013/12/coupling-docker-and-open-vswitch.html
+
+Veamos esto: https://github.com/gopher-net/docker-ovs-plugin
+https://hub.docker.com/r/gophernet/ovs-plugin/~/dockerfile/
+https://medium.com/@joatmon08/making-it-easier-docker-containers-on-open-vswitch-4ed757619af9
+http://therandomsecurityguy.com/openvswitch-cheat-sheet/
+https://www.packtpub.com/mapt/book/networking_and_servers/9781785280955/1/ch01lvl1sec10/docker-ovs
+https://gist.github.com/noteed/8656989
+http://docker-k8s-lab.readthedocs.io/en/latest/docker/docker-ovs.html
+
+(Networking in compose - compose networking)
+Importante: https://docs.docker.com/compose/networking/
+
+OJO:
+Cambiar el nombre del proyecto para ver si dejan de salirme esos nombres tan feos al sacar varias instancias.
+
+Apuntes de: https://docs.docker.com/compose/networking/
+1. Links: Links allow you to define extra aliases by which a service is reachable from another service
+2. Sera que la clave esta en lo que se conoce como driver.
+
+you can specify your own networks with the top-level networks key (estas redes seran ya previamente creadas con docker network??)
+
+....
+docker network create --driver weave mynet
+docker run --network=mynet busybox top
+
+---> Creo que por aca va a ser:
+docker network create -d ovs mynet
+
+Configure the default network -- Ver ()
+
+version: "3"
+services:
+
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+  db:
+    image: postgres
+
+networks:
+  default:
+    # Use a custom driver
+    driver: custom-driver-1
+
+	
+Creo que el custom-driver-1 es por ejemplo el ovs-switch?	 --> Ver la parte de redes: https://docs.docker.com/compose/compose-file/#labels-3
+Tarea: Corra odcker compose y ver cual es el nombre de la red que se corre, asi mismo cambi el nombre de la red generada
+****
+
+networks:
+  default:
+    external:
+      name: my-pre-existing-network
+	  
+	  
+https://docs.docker.com/compose/compose-file/#labels-3
+HOST OR NONE
+
+docker run --net=host
+docker run --net=none
+
+docker-compose --> 
+
+network_mode
+Network mode. Use the same values as the docker client --net parameter, plus the special form service:[service name].
+
+network_mode: "bridge"
+network_mode: "host"
+network_mode: "none"
+network_mode: "service:[service name]"
+network_mode: "container:[container name/id]"
+
+
+
+services:
+  web:
+    ...
+    networks:
+      hostnet: {}
+
+networks:
+  hostnet:
+    external:
+      name: host
+	  
+------------------------------------------------
+	  
+services:
+  web:
+    ...
+    networks:
+      nonet: {}
+
+networks:
+  nonet:
+    external:
+      name: none
+	  
+driver_opts
+Specify a list of options as key-value pairs to pass to the driver for this network. Those options are driver-dependent - consult the driver’s documentation for more information. Optional.
+
+  driver_opts:
+    foo: "bar"
+    baz: 1	  
+
+
+***********************************************************************************************************************************************
+Fecha: Septiembre 26
+
+
+https://docs.docker.com/compose/reference/envvars/#compose_project_name
+
+cd /mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/test2/
+docker-compose scale ubuntu_machine=2
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/test2# docker-compose scale ubuntu_machine=2
+WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
+Creating test2_ubuntu_machine_1 ... 
+Creating test2_ubuntu_machine_2 ... 
+Creating test2_ubuntu_machine_1 ... error
+Creating test2_ubuntu_machine_2 ... error
+
+ERROR: for test2_ubuntu_machine_1  Cannot start service ubuntu_machine: No such network: test2_default
+
+ERROR: for test2_ubuntu_machine_2  Cannot start service ubuntu_machine: No such network: test2_default
+ERROR: Cannot start service ubuntu_machine: No such network: test2_default
+
+
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/test2# docker-compose up
+Creating network "test2_default" with the default driver
+Stopping and removing test2_ubuntu_machine_2 ... done
+Starting test2_ubuntu_machine_1 ... 
+Starting test2_ubuntu_machine_1 ... done
+Attaching to test2_ubuntu_machine_1
+
+
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/test2# docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+01d63d7dae25        ubuntu              "/bin/bash"         2 minutes ago       Up About a minute                       test2_ubuntu_machine_1
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/test2# docker network ls
+NETWORK ID          NAME                DRIVER              SCOPE
+5e483fa9ca1c        bridge              bridge              local
+7a8ef19128fa        host                host                local
+f4b11325426c        none                null                local
+c548092b42d4        test2_default       bridge              local
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/ejemplos_docker_networking/test2# docker-compose scale ubuntu_machine=2
+WARNING: The scale command is deprecated. Use the up command with the --scale flag instead.
+Starting test2_ubuntu_machine_1 ... 
+Starting test2_ubuntu_machine_1 ... done
+Creating test2_ubuntu_machine_2 ... 
+Creating test2_ubuntu_machine_2 ... done
+
+corramos el docker compose con la flag --project-name flag (https://docs.docker.com/compose/reference/overview/)
+
+docker-compose up --scale SERVICE=2 ubuntu_machine
+
+El siguiente neklace ser bueno: https://www.brianchristner.io/how-to-scale-a-docker-container-with-docker-compose/
+
+
+https://github.com/docker/compose/issues/2496
+
+http://anandmanisankar.com/posts/docker-container-nginx-node-redis-example/
+
+
+
+
+
+
+docker ps
+  194  docker stop 24d4
+  195  docker stop ec92
+  196  clear
+  197  docker rm ec92
+  198  docker rm 24d4
+  199  clear
+
+
+
+
+
+
+
