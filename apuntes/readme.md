@@ -60,5 +60,35 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 ```
 
-Documents
+
+Instalación de dockernet
 -------------
+Para instalar **dockernet** se siguieron las instrucciones de la siguiente pagina: https://github.com/cgeoffroy/dockernet
+
+> **Note:**
+
+> Cabe anotar que la ejecucion de estos comandos al pie de la letra no resulto exitosa, se tuvieron bastantes problemas y al final la verdad se llego al resultado solo por que mi Dios es muy bueno. 
+```
+# Comandos previos a la instalacion
+sudo apt-get install python-pip
+sudo apt-get install aptitude
+apt-get install kvm libvirt-bin virtinst uml-utilities
+virsh net-destroy default
+sudo apt-get purge ebtables 
+apt-get install openvswitch-switch
+sudo pip install -U urllib3==1.14
+glances -w
+pip install --user 'docker-py==1.7.2'
+sudo pip install pyzmq
+# Instalacion
+# Vamos a asumir que el directorio de instalacion (BUILD_DIR) es el home
+cd $BUILD_DIR
+sudo apt-get install ansible git
+sudo vim /etc/ansible/hosts 
+# Agregar en el archivo anterior: localhost ansible_connection=local
+wget https://github.com/cgeoffroy/dockernet/archive/master.zip
+unzip master.zip
+mv dockernet-master dockernet
+cd dockernet/ansible
+sudo ansible-playbook install.yml
+```
