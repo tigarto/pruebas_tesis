@@ -5,7 +5,6 @@ Configurando el entorno de desarrollo
 A continuación se describe de manera somera y sin correcciones posteriores el proceso llevado a cabo para configurar el entorno de desarrollo.
 
 > **Note:**
-
 > Las instrucciones llevadas a cabo para la configuración del entorno de desarrollo se llevaron a cabo mediante un procedimiento de ensayo y error. **No hay garantía** que su aplicación de la misma manera genere los resultados que se obtuvieron en el caso. Para ser sinceros, muchos de los resultados a los cuales se llego fuero por que mi Dios es muy bueno. 
 
 ----------
@@ -66,7 +65,6 @@ Instalación de dockernet
 Para instalar **dockernet** se siguieron las instrucciones de la siguiente pagina: https://github.com/cgeoffroy/dockernet
 
 > **Note:**
-
 > Cabe anotar que la ejecucion de estos comandos al pie de la letra no resulto exitosa, se tuvieron bastantes problemas y al final la verdad se llego al resultado solo por que mi Dios es muy bueno. 
 ```
 # Comandos previos a la instalacion
