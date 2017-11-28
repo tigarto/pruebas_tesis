@@ -1,0 +1,131 @@
+Fecha: 27/11/2017
+
+Retomando mininet and Docker: http://csie.nqu.edu.tw/smallko/sdn/sdn.htm
+
+
+https://github.com/vfreex/dockernet
+https://hub.docker.com/r/cgeoffroy/dockernet/
+https://github.com/cgeoffroy/dockernet
+
+apt-cache search mininet
+apt-get install mininet
+/etc/init.d/openvswitch-switch start
+
+
+mn 
+mn -c
+
+....
+
+http://fabiorehm.com/blog/2014/09/11/running-gui-apps-with-docker/
+
+Por ahora vamos a intentar hacer o correr lo de la siguiente pagina: https://github.com/cgeoffroy/dockernet
+
+La version de python que se tiene es la 2.7.x...
+1. Instalando docker-py: https://github.com/docker/docker-py
+
+pip install docker
+
+root@kali:~# python
+Python 2.7.13 (default, Jan 19 2017, 14:48:08) 
+[GCC 6.3.0 20170118] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import docker
+>>> client = docker.from_env()
+>>> help(client)
+
+>>> client.containers.run("ubuntu", "echo hello world")
+'hello world\n'
+>>> client.containers.list()
+[]
+>>> exit()
+
+Dio la coas: https://docker-py.readthedocs.io/en/stable/
+
+Sigamos a veer que sale: https://github.com/cgeoffroy/dockernet
+
+sudo apt-get install ansible git
+sudo vim /etc/ansible/hosts
+localhost ansible_connection=local
+git clone https://github.com/mpeuster/dockernet.git
+cd dockernet/ansible
+sudo ansible-playbook install.yml
+
+En mi pc:
+
+
+apt-get install ansible git
+
+sudo vim /etc/ansible/hosts
+  localhost ansible_connection=local
+
+root@kali:~/Documents# pwd
+/root/Documents
+
+Se descargo el .zip y se descomprimio en mis documentos.
+
+root@kali:~/Documents# cd dockernet/ansible/
+root@kali:~/Documents/dockernet/ansible# ls
+install.yml
+
+
+ansible-playbook install.yml
+
+
+
+
+
+Veamos si podemos instalar docker engine: https://www.ptrace-security.com/2017/06/14/how-to-install-docker-on-kali-linux-2017-1/
+
+https://github.com/moby/moby/issues/20698
+https://ubuntuforums.org/showthread.php?t=2358025
+
+
+root@kali:~/Documents/dockernet/ansible# apt-get update
+Ign:1 http://us.archive.ubuntu.com/ubuntu trusty InRelease
+Get:2 http://us.archive.ubuntu.com/ubuntu trusty Release [58.5 kB]                          
+Hit:3 https://download.docker.com/linux/debian stretch InRelease                            
+Hit:5 https://apt.dockerproject.org/repo ubuntu-trusty InRelease                            
+Hit:6 https://apt.dockerproject.org/repo debian-stretch InRelease                  
+Get:7 http://us.archive.ubuntu.com/ubuntu trusty Release.gpg [933 B]                  
+Ign:7 http://us.archive.ubuntu.com/ubuntu trusty Release.gpg                                
+Hit:4 http://archive-7.kali.org/kali kali-rolling InRelease
+Reading package lists... Done
+W: Target Packages (stable/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: Target Packages (stable/binary-all/Packages) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: Target Translations (stable/i18n/Translation-en) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: Target DEP-11 (stable/dep11/Components-amd64.yml) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: Target DEP-11 (stable/dep11/Components-all.yml) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: Target DEP-11-icons (stable/dep11/icons-64x64.tar) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: GPG error: http://us.archive.ubuntu.com/ubuntu trusty Release: The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 40976EAF437D05B5 NO_PUBKEY 3B4FE6ACC0B21F32
+E: The repository 'http://us.archive.ubuntu.com/ubuntu trusty Release' is not signed.
+N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+N: See apt-secure(8) manpage for repository creation and user configuration details.
+W: Target Packages (stable/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: Target Packages (stable/binary-all/Packages) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: Target Translations (stable/i18n/Translation-en) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: Target DEP-11 (stable/dep11/Components-amd64.yml) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: Target DEP-11 (stable/dep11/Components-all.yml) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+W: Target DEP-11-icons (stable/dep11/icons-64x64.tar) is configured multiple times in /etc/apt/sources.list:9 and /etc/apt/sources.list:10
+root@kali:~/Documents/dockernet/ansible# sudo sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 40976EAF437D05B5
+Executing: /tmp/apt-key-gpghome.XryNhy5EOJ/gpg.1.sh --keyserver keyserver.ubuntu.com --recv 40976EAF437D05B5
+gpg: key 40976EAF437D05B5: 47 signatures not checked due to missing keys
+gpg: key 40976EAF437D05B5: public key "Ubuntu Archive Automatic Signing Key <ftpmaster@ubuntu.com>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1
+
+
+Ahora si se puede proceder a instalar la libreria.
+
+Volvamos a intentar la instalacion de dockernet:
+
+root@kali:~/Documents/dockernet/ansible# ansible-playbook install.yml
+
+
+
+
+
+
+
+
+
