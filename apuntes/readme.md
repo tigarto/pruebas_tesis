@@ -78,11 +78,13 @@ sudo pip install -U urllib3==1.14
 glances -w
 pip install --user 'docker-py==1.7.2'
 sudo pip install pyzmq
+
 # Instalacion
 # Vamos a asumir que el directorio de instalacion (BUILD_DIR) es el home
 cd $BUILD_DIR
 sudo apt-get install ansible git
 sudo vim /etc/ansible/hosts 
+
 # Agregar en el archivo anterior: localhost ansible_connection=local
 wget https://github.com/cgeoffroy/dockernet/archive/master.zip
 unzip master.zip
@@ -90,3 +92,7 @@ mv dockernet-master dockernet
 cd dockernet/ansible
 sudo ansible-playbook install.yml
 ```
+Test de dockernet
+-------------
+El test no arrojo los resultados esperados por lo tanto, esa platica se perdio.
+
