@@ -6,7 +6,6 @@ A continuación se describen las instrucciones necesarias para configurar el ent
 > **Note:**
 > Las instrucciones llevadas a cabo para la configuración del entorno de desarrollo se llevaron a cabo mediante un procedimiento de ensayo y error. **No hay garantía** que su aplicación de la misma manera genere los resultados que se obtuvieron en el caso. Para ser sinceros, muchos de los resultados a los cuales se llego fuero por que mi Dios es muy bueno. 
 
-----------
 Entorno de desarrollo
 -------------
 La distribución linux empleada fue **Kali-Linux-2017.2**, para el caso se trabajo con una imagen de vmware descarda de: https://www.kali.org/downloads/
