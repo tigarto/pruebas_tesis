@@ -1,18 +1,18 @@
 version: '3'
 services:
   host:
-    build: .    
-    command: ifconfig
+    build: .  
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
     networks:
       static-network:
         ipv4_address: 172.16.238.10
-    entrypoint: /bin/bash
-    stdin_open: true
-    tty: true
  
 networks:
   static-network:
     ipam:
       config:
         - subnet: 172.16.238.0/24
+        
         
