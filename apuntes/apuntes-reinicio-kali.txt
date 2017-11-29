@@ -1,0 +1,74 @@
+Fecha: 28/11/2017
+
+Fijando el entorno de desarrollo:
+1. apt-get install docker-ce
+2. apt-get install docker-compose
+3. apt-get install openvswitch-switch
+
+El ultimo ya viene con ovs-docker.
+
+Vamos a seguir las siguientes instrucciones:
+
+https://github.com/gopher-net/docker-ovs-plugin
+
+
+
+
+mkdir ovs
+cd ovs
+docker-compose up -d
+
+
+docker network create -d ovs mynet
+docker run -itd --net=mynet --name=web nginx
+docker run -it --rm --net=mynet busybox wget -qO- http://web
+
+Sale algo como: wget: bad address 'web'
+
+
+version: '2.1'
+
+services:
+  app:
+    image: busybox
+    command: ifconfig
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.10
+        ipv6_address: 2001:3984:3989::10
+
+networks:
+  app_net:
+    driver: bridge
+    enable_ipv6: true
+    ipam:
+      driver: default
+      config:
+      -
+        subnet: 172.16.238.0/24
+      -
+        subnet: 2001:3984:3989::/64
+
+
+https://docs.docker.com/compose/startup-order/
+
+
+
+
+version: '3'
+services:
+  host:
+    build: .  
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    command: ifconfig
+    networks:
+      static-network:
+        ipv4_address: 172.16.238.10
+
+    
+ 
+    
+
+
