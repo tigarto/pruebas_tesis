@@ -1,18 +1,15 @@
 Pruebas
 ===================
 
-
 A continuación se describe de manera somera y sin correcciones posteriores el proceso llevado a cabo para configurar la topologia de test.
-
 > **Nota:**
-> Aca el test solo se preocupa por la conectividad entre los diferentes elementos de la red. Todavia no se hace enfasís en el montaje del 
-> test.
-
-----------
+> Aca el test solo se preocupa por la conectividad entre los diferentes elementos de la red. Todavia no se hace enfasís en el montaje del test.
 Prueba 1
 -------------
 La siguiente figura muestra la topología a montar:
-<i class="icon-trash"></i>
+
+![Montaje 1](test1.png?raw=true "Experimento 1")
+
 ####  Descripción de la topologia
 
 | Host     | Interfaz | IP   | Imagen |
