@@ -1,0 +1,153 @@
+Conectado a Docker
+
+Caso 1:
+
+docker run -it --name=h1 kalilinux/kali-linux-docker /bin/bash 
+docker run -it --name=h2 ubuntu /bin/bash 
+
+Inventariando:
+https://docs.docker.com/engine/userguide/networking/work-with-networks/#create-networks
+
+
+docker ps
+docker network ls
+docker network top hx
+docker inspect --format='' h2
+
+docker inspect -f '{{.Name}}' h2
+docker inspect -f '{{.NetworkSettings.Networks.bridge}}' h2
+docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' h2
+docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' h2
+docker exec h2 cat /etc/hosts
+
+---- switch
+docker network inspect bridge
+docker network inspect -f '{{.IPAM}}' bridge
+docker network inspect -f '{{.Containers}}' bridge
+
+*******
+docker network create -d overlay \
+  --subnet=192.168.0.0/16 \
+  --subnet=192.170.0.0/16 \
+  --gateway=192.168.0.100 \
+  --gateway=192.170.0.100 \
+  --ip-range=192.168.1.0/24 \
+  --aux-address="my-router=192.168.1.5" --aux-address="my-switch=192.168.1.6" \
+  --aux-address="my-printer=192.170.1.5" --aux-address="my-nas=192.170.1.6" \
+  my-multihost-network
+
+
+
+https://stackoverflow.com/questions/17157721/how-to-get-a-docker-containers-ip-address-from-the-host
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name_or_id
+
+
+-->
+docker-ip() {
+  docker inspect --format '{{ .NetworkSettings.IPAddress }}' "$@"
+}
+
+docker-ip YOUR_CONTAINER_ID
+-
+
+docker-ip() {
+        docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
+}
+
+docker inspect -f '{{.Name}} - {{.NetworkSettings.IPAddress }}' $(docker ps -aq)
+
+docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+
+Show all containers IP addresses:
+docker inspect --format='{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+
+docker exec [container-id or container-name] cat /etc/hosts
+
+
+
+-->
+
+**
+docker run -itd --name=container1 busybox
+docker run -itd --name=container2 busybox
+docker network create -d bridge --subnet 172.25.0.0/16 isolated_nw
+docker network connect isolated_nw container2
+docker network inspect isolated_nw
+docker run --network=isolated_nw --ip=172.25.3.3 -itd --name=container3 busybox
+docker inspect --format=''  container3
+
+
+https://stackoverflow.com/questions/17157721/how-to-get-a-docker-containers-ip-address-from-the-host
+
+
+---bash::
+
+
+function docker_container_names() {
+    docker ps -a --format "{{.Names}}" | xargs
+}
+
+# Get the IP address of a particular container
+dip() {
+    local network
+    network='YOUR-NETWORK-HERE'
+    docker inspect --format "{{ .NetworkSettings.Networks.$network.IPAddress }}" "$@"
+}
+
+dipall() {
+    for container_name in $(docker_container_names);
+    do
+        local container_ip=$(dip $container_name)
+        if [[ -n "$container_ip" ]]; then
+            echo $(dip $container_name) " $container_name"
+        fi
+    done | sort -t . -k 3,3n -k 4,4n
+}
+
+
+.basrc
+docker-ips() {
+    docker inspect --format='{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
+}
+
+docker-ip() {
+  docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$@"
+}
+
+docker-ips
+docker-ip YOUR_CONTAINER_ID
+
+
+En la siguiente pagina y aun mejor, se encuetran un monton de scripts para trabajar con docker:
+
+https://github.com/ajohnstone/dot-files/blob/master/bash.d/bash/docker (Descargar todos estos scripts para hacer inventario, 
+http://networkstatic.net/10-examples-of-how-to-get-docker-container-ip-address/
+
+TIPS:
+http://blog.terranillius.com/post/everyday_hacks/
+https://www.ctl.io/developers/blog/post/what-to-inspect-when-youre-inspecting
+https://container42.com/2016/03/27/docker-quicktip-7-psformat/
+http://container-solutions.com/docker-inspect-template-magic/
+https://www.katacoda.com/courses/docker/formatting-ps-output  (Sumamente importante)
+*************************************************************************************************************************
+
+docker network create \
+  --driver=bridge \
+  --subnet=10.0.0.0/8 \
+  --gateway=10.0.0.254 \
+  mynet
+
+docker network ls
+docker network inspect mynet
+
+
+docker run --network=mynet --ip 10.0.0.1 -it --name=h1 kalilinux/kali-linux-docker /bin/bash
+docker run --network=mynet --ip 10.0.0.2 -it --name=h2 ubuntu /bin/bash
+
+
+Para mas informacion ver: https://stackoverflow.com/questions/27937185/assign-static-ip-to-docker-container
+
+
+
+
+
