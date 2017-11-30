@@ -82,3 +82,9 @@ Para instalar Docker se siguieron las instrucciones de la siguiente pagina: http
 # Aca van los comandos
 
 ```
+####  Referencias
+- http://blog.terranillius.com/post/everyday_hacks/
+- https://www.ctl.io/developers/blog/post/what-to-inspect-when-youre-inspecting
+- https://container42.com/2016/03/27/docker-quicktip-7-psformat/
+- http://container-solutions.com/docker-inspect-template-magic/
+- https://www.katacoda.com/courses/docker/formatting-ps-output 
