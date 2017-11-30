@@ -98,11 +98,98 @@ docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' h2
 ```
 El siguiente enlace puede ser de utilidad para ayudar a comprender el procedimiento para profundizar mas al respecto: https://stackoverflow.com/questions/27937185/assign-static-ip-to-docker-container 
 
-####  Comandos de instalacion en consola
+####  Caso 3: Topologia empleando driver bridge pero definiendo la topologia en un archivo docker-compose
+
+#####  Descripción de la topologia
+
+| Host     | Interfaz | IP   | Imagen |
+| :------- | ----: | :---: | :--: |
+| h1 | ? |  ? | kalilinux/kali-linux-docker| 
+| h2 | ? |  ? | ubuntu |
+
+Inicialmente no la conectividad no sera empleando OpenFlow. Asi mismo la definicion de la topologia no sera empleando
+comandos en consola sino haciendo uso de docker-compose (https://docs.docker.com/compose/).
+
+####  Comandos de montaje de la topología
+El proceso para montar y hacer pruebas sobre la topología topología se muestra a continuación:
+1. Codificar el archivo .yml en el editor de texto preferido. El nombre de este por default será docker-compose.yml
+2. Ejecutar el comando para procesar el archivo de docker compose y poner en marcha la topología
+3. Verficar mediante los comandos de información (inspect por ejemplo) que la topologia creada sea consistente con lo definido en el archivo de docker-compose.
+4. Hacer las respectivas pruebas y analizar los resultados.
+5. Una vez se hagan las pruebas bajar la topologia.
+
+#####  Comandos
+####  Codificando el archivo docker-compose.yml
+A continuación se muestra el archivo codificado:
 ```
-# Aca van los comandos
+version: '3'
+
+services:
+  kali:
+    image: "kalilinux/kali-linux-docker" 
+    container_name: h1 
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      - mynet2      
+  ubuntu:
+    image: "ubuntu"
+    container_name: h2  
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      - mynet2
+      
+networks:
+  mynet2:
+    driver: bridge
+```
+
+#####  Puesta en marcha de la topologia
+En el directorio donde se encuentra el archivo docker-compose.yml recien editado, se ejecuta el comando de docker-compose para lanzar la red:
+```
+# Lanzando la red
+docker-compose up -d
+# Verificando 
+docker-compose ps
+docker-compose logs
+```
+-> **Nota:**
+-> Para mas información consultar: https://docs.docker.com/compose/reference/overview/#command-options-overview-and-help.
+
+#####  Comandos de verificacion
+A continuación se muestran algunos comandos de verificación empleados para verificar que la topología lanzada este de acuerdo a lo deseado:
 
 ```
+# Verificando la red
+docker network ls
+docker network inspect mynet2  # Tambien puede ser el ID(mynet2)
+                               # Tambien en el peor de los casos el nombre que aparece con el ls
+# Verificando los containers
+docker ps
+docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' h1
+docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' h2
+```
+#####  Pruebas en la red
+Para el caso se hizo una prueba de conectividad sencilla haciendo un ping desde el container de kali (pues es el unico con 
+esta utilidad instalada). Si todo sale bien, habra conectividad indicando que vamos por buen camino:
+
+```
+ping -c 4 IP(h2)
+```
+-> **Nota:**
+-> - El comando anterior se ejecutó dentro del container h1 (el de kali).
+-> - Se pueden hacer las pruebas que se quieran (de acuerdo a las necesidades).
+
+#####  Bajando la red
+Para ello se usa el comando down de docker-compose en el directorio en el que se encuentra el archivo docker-compose.yml, asi:
+```
+docker-compose down
+```
+
+
 ####  Referencias
 - http://blog.terranillius.com/post/everyday_hacks/
 - https://www.ctl.io/developers/blog/post/what-to-inspect-when-youre-inspecting
