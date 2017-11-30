@@ -67,16 +67,37 @@ Inicialmente no la conectividad no sera empleando OpenFlow.
 A continuación se muestran los montajes para llevar a cabo la topología:
 
 #####  Comandos
-Para el caso se emplearon los siguientes comandos.
+
+Inicialmente se creo y testeo la red:
+```
+# Creando la red
+docker network create \
+  --driver=bridge \
+  --subnet=10.0.0.0/8 \
+  --gateway=10.0.0.254 \
+  mynet
+# Listando las redes disponibles
+docker network ls
+# Inspeccionando las propiedades de la red creada
+docker network inspect mynet
+```
+Posteriormente se crearon los contenedores
 ```
 # Creando los contenedores
 # Container h1
-docker run -it --name=h1 kalilinux/kali-linux-docker /bin/bash 
+docker run --network=mynet --ip 10.0.0.1 -it --name=h1 kalilinux/kali-linux-docker /bin/bash
 # Container h2
-docker run -it --name=h2 ubuntu /bin/bash
+docker run --network=mynet --ip 10.0.0.2 -it --name=h2 ubuntu /bin/bash
 ```
+#####  Información de la topología
+A continuacion se muestran algunos comandos empleados para obtener informacion de los contenedores asociados a la red
+```
+docker ps
+docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' h1
+docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' h2
+```
+El siguiente enlace puede ser de utilidad para ayudar a comprender el procedimiento para profundizar mas al respecto: https://stackoverflow.com/questions/27937185/assign-static-ip-to-docker-container 
 
-Para instalar Docker se siguieron las instrucciones de la siguiente pagina: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#trusty-1404
 ####  Comandos de instalacion en consola
 ```
 # Aca van los comandos
