@@ -2,8 +2,8 @@ Pruebas
 ===================
 
 A continuación se describe de manera somera y sin correcciones posteriores el proceso llevado a cabo para configurar la topologia de test.
--> **Nota:**
--> Aca el test solo se preocupa por la conectividad entre los diferentes elementos de la red. Todavia no se hace enfasís en el montaje del test.
+> **Nota:**
+> Aca el test solo se preocupa por la conectividad entre los diferentes elementos de la red. Todavia no se hace enfasís en el montaje del test.
 
 Prueba 1
 --------------
@@ -179,9 +179,9 @@ esta utilidad instalada). Si todo sale bien, habra conectividad indicando que va
 ```
 ping -c 4 IP(h2)
 ```
--> **Nota:**
--> - El comando anterior se ejecutó dentro del container h1 (el de kali).
--> - Se pueden hacer las pruebas que se quieran (de acuerdo a las necesidades).
+> **Nota:**
+> - El comando anterior se ejecutó dentro del container h1 (el de kali).
+> - Se pueden hacer las pruebas que se quieran (de acuerdo a las necesidades).
 
 #####  Bajando la red
 Para ello se usa el comando down de docker-compose en el directorio en el que se encuentra el archivo docker-compose.yml, asi:
