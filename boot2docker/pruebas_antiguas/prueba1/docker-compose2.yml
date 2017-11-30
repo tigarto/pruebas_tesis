@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  kali:
+    image: "kalilinux/kali-linux-docker" 
+    container_name: h1 
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      mynet2:
+        ipv4_address: 10.0.0.2    
+  ubuntu:
+    image: "ubuntu"
+    container_name: h2  
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      mynet2:
+        ipv4_address: 10.0.0.3   
+         
+networks:
+  mynet2:    
+    ipam:      
+      config: 
+        - subnet: 10.0.0.0/8
+          
