@@ -110,5 +110,9 @@ El siguiente enlace puede ser de utilidad para ayudar a comprender el procedimie
 - http://container-solutions.com/docker-inspect-template-magic/
 - https://www.katacoda.com/courses/docker/formatting-ps-output 
 - https://coderwall.com/p/2rpbba/docker-create-a-bridge-and-shared-network
-- https://runnable.com/docker/basic-docker-networking
 - http://www.dasblinkenlichten.com/docker-networking-101-user-defined-networks/
+- http://blog.arungupta.me/docker-bridge-overlay-network-compose-variable-substitution/
+- http://docker-k8s-lab.readthedocs.io/en/latest/docker/docker-compose.html
+- https://runnable.com/docker/docker-compose-networking
+- https://runnable.com/docker/basic-docker-networking
+- http://www.summa.com/blog/docker-for-developers-composing-multi-container-networks
