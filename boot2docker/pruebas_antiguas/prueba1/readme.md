@@ -109,3 +109,6 @@ El siguiente enlace puede ser de utilidad para ayudar a comprender el procedimie
 - https://container42.com/2016/03/27/docker-quicktip-7-psformat/
 - http://container-solutions.com/docker-inspect-template-magic/
 - https://www.katacoda.com/courses/docker/formatting-ps-output 
+- https://coderwall.com/p/2rpbba/docker-create-a-bridge-and-shared-network
+- https://runnable.com/docker/basic-docker-networking
+- http://www.dasblinkenlichten.com/docker-networking-101-user-defined-networks/
