@@ -1,0 +1,180 @@
+
+docker network create \
+  --driver=bridge \
+  --subnet=10.0.0.0/8 \
+  --gateway=10.0.0.254 \
+  mynet
+
+docker network ls
+docker network inspect mynet
+
+
+docker run --network=mynet --ip 10.0.0.1 -it --name=h1 kalilinux/kali-linux-docker /bin/bash
+docker run --network=mynet --ip 10.0.0.2 -it --name=h2 ubuntu /bin/bash
+
+
+Para mas informacion ver: https://stackoverflow.com/questions/27937185/assign-static-ip-to-docker-container
+
+docker run -it --name=h1 kalilinux/kali-linux-docker 
+docker network create --driver=bridge --subnet=192.168.0.0/16 br
+
+
+docker network create \
+  --driver=bridge \
+  --subnet=172.28.0.0/16 \
+  --ip-range=172.28.5.0/24 \
+  --gateway=172.28.5.254 \
+  br0
+
+
+docker network create -d overlay \
+  --subnet=192.168.0.0/16 \
+  --subnet=192.170.0.0/16 \
+  --gateway=192.168.0.100 \
+  --gateway=192.170.0.100 \
+  --ip-range=192.168.1.0/24 \
+  --aux-address="my-router=192.168.1.5" --aux-address="my-switch=192.168.1.6" \
+  --aux-address="my-printer=192.170.1.5" --aux-address="my-nas=192.170.1.6" \
+  my-multihost-network
+
+
+docker network create -d bridge my-bridge-network
+
+
+
+docker network ls
+
+
+ip addr show
+
+Dentro del containter:
+
+cat /etc/hosts
+ip -4 addr
+
+*****
+docker network inspect bridge
+docker run -itd --name=container1 busybox
+docker run -itd --name=container2 busybox
+docker network inspect bridge
+
+***
+User-defined networks
+
+
+docker network create --driver bridge isolated_nw
+docker network inspect isolated_nw
+docker network ls
+docker run --network=isolated_nw -itd --name=container3 busybox
+docker network inspect isolated_nw
+
+
+Enlace:
+https://coderwall.com/p/2rpbba/docker-create-a-bridge-and-shared-network
+https://runnable.com/docker/basic-docker-networking
+http://www.dasblinkenlichten.com/docker-networking-101-user-defined-networks/
+
+docker run --network=mynet --ip 10.0.0.1 -it --name=h1 kalilinux/kali-linux-docker /bin/bash
+docker run --network=mynet --ip 10.0.0.2 -it --name=h2 ubuntu /bin/bash
+
+
+
+version: '3'
+services:
+  kali:
+    build: kalilinux/kali-linux-docker 
+    container_name: h1 
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      static-network:
+        ipv4_address: 10.0.0.1
+
+  ubuntu:
+    build: kalilinux/kali-linux-docker
+    container_name: ubuntu  
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      static-network:
+        ipv4_address: 10.0.0.2
+
+default:
+    external:
+      name: mynet
+
+ 
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 10.0.0.0/8
+        - gateway: 10.0.0.254
+
+
+
+version: '2'
+services:
+  nginx:
+    image: nginx
+    container_name: nginx-container
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.2
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          ip_range: 172.28.5.0/24        
+
+
+https://runnable.com/docker/docker-compose-networking
+https://runnable.com/docker/basic-docker-networking
+
+
+http://www.summa.com/blog/docker-for-developers-composing-multi-container-networks
+
+
+
+version: '3'
+services:
+  kali:
+    image: "kalilinux/kali-linux-docker" 
+    container_name: h1 
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      - mynet2
+      # mynet2:
+      #  ipv4_address: 10.0.0.1
+
+  ubuntu:
+    image: "ubuntu"
+    container_name: h2  
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      - mynet2
+      # mynet2:
+      #  ipv4_address: 10.0.0.2
+
+networks:
+  mynet2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/8
+
+
+#networks:
+#  default:
+#    external:
+#      name: mynet
+
+http://blog.arungupta.me/docker-bridge-overlay-network-compose-variable-substitution/
+http://docker-k8s-lab.readthedocs.io/en/latest/docker/docker-compose.html
