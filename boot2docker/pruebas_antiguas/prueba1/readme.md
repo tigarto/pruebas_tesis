@@ -188,7 +188,88 @@ Para ello se usa el comando down de docker-compose en el directorio en el que se
 ```
 docker-compose down
 ```
+####  Caso 4: Topologia empleando driver bridge pero definiendo la topologia en un archivo docker-compose (Las IPs de los containers se definen manualmente)
 
+#####  Descripción de la topologia
+
+| Host     | Interfaz | IP   | Imagen |
+| :------- | ----: | :---: | :--: |
+| h1 | ? |  10.0.0.2 | kalilinux/kali-linux-docker| 
+| h2 | ? |  10.0.0.3 | ubuntu |
+
+> **Nota:**
+> - No fue posible asignar la IP 10.0.0.1, pues al parecer esta ya se encuentra reservada (No se porque)
+
+#####  Comandos
+####  Codificando el archivo docker-compose.yml
+A continuación se muestra el archivo codificado, que para el caso se llamo **docker-compose2.yml**:
+```
+version: '3'
+
+services:
+  kali:
+    image: "kalilinux/kali-linux-docker" 
+    container_name: h1 
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      mynet2:
+        ipv4_address: 10.0.0.2    
+  ubuntu:
+    image: "ubuntu"
+    container_name: h2  
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      mynet2:
+        ipv4_address: 10.0.0.3   
+         
+networks:
+  mynet2:    
+    ipam:      
+      config: 
+        - subnet: 10.0.0.0/8
+```
+#####  Puesta en marcha de la topologia
+En el directorio donde se encuentra el archivo docker-compose.yml recien editado, se ejecuta el comando de docker-compose para lanzar la red:
+```
+# Lanzando la red
+docker-compose -f docker-compose2.yml up -d
+# Verificando 
+docker-compose ps
+docker-compose logs
+```
+
+#####  Comandos de verificacion
+Similar al caso 3:
+
+```
+# Verificando la red
+docker network ls
+docker network inspect mynet2  # Tambien puede ser el ID(mynet2)
+                               # Tambien en el peor de los casos el nombre que aparece con el ls
+# Verificando los containers
+docker ps
+docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' h1
+docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' h2
+```
+#####  Pruebas en la red
+No cambia para este caso la prueba hecha:
+
+```
+ping -c 4 IP(h2)
+```
+> **Nota:**
+> - El comando anterior se ejecutó dentro del container h1 (el de kali).
+> - Se pueden hacer las pruebas que se quieran (de acuerdo a las necesidades).
+
+#####  Bajando la red
+Para ello se usa el comando down de docker-compose en el directorio en el que se encuentra el archivo docker-compose.yml, asi:
+```
+docker-compose down
+```
 
 ####  Referencias
 - http://blog.terranillius.com/post/everyday_hacks/
