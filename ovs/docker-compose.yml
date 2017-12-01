@@ -3,7 +3,6 @@ plugin:
   volumes:
     - /run/docker/plugins:/run/docker/plugins
     - /var/run/docker.sock:/var/run/docker.sock
-  container_name: ovs-plugin
   net: host
   stdin_open: true
   tty: true
@@ -15,4 +14,3 @@ ovs:
   cap_add:
     - NET_ADMIN
   net: host
-  container_name: ovs
