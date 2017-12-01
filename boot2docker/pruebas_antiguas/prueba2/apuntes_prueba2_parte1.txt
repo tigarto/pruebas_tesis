@@ -1,0 +1,89 @@
+sudo ovs-vsctl set-fail-mode s1 secure
+
+sudo ovs-vsctl set-controller s1 tcp:127.0.0.1:6633
+sudo ovs-vsctl show
+
+
+https://kashyapc.com/2013/07/13/configuring-libvirt-guests-with-an-open-vswitch-bridge/
+
+ovs-vsctl add-br ovsbr0
+ovs-vsctl add-port ovsbr0 eth0
+ifconfig eth0 0.0.0.0
+ifconfig ovsbr0 10.xx.yyy.zzz
+dhclient ovsbr0 &
+ovs-vsctl show
+
+
+http://flaviof.com/blog/work/how-to-odl-in-docker.html
+
+http://www.daolicloud.com/
+http://www.daolicloud.com/html/technology.html
+http://www.daolicloud.com/html/company.html
+
+
+
+https://docs.google.com/document/d/1UvEdKZXz3bNKkJtcHYhPsXk9bycV5kcMtHUNIm6SqE8/edit#
+
+cd /usr/local/lib/python2.7/dist-packages/ryu/app
+# sudo fuser -k Port_Number/tcp
+sudo fuser -k 6633/tcp
+ryu-manager --verbose simple_switch.py
+
+# sudo mn --controller=remote,ip=[controller IP],port=[controller listening port]
+sudo mn --mac --controller=remote,ip=127.0.0.1,port=6633
+
+sudo ovs-vsctl show
+
+-------
+
+
+# Create an OVS bridge
+sudo ovs-vsctl add-br s1
+# Add a port from OVS bridge to the Docker Container
+docker run --name h1 --hostname h1 --rm -ti ubuntu_ping bash
+docker run --name h2 --hostname h2 --rm -ti ubuntu_ping bash
+# Connect the container to OVS bridge
+sudo ovs-docker add-port s1 h1-eth0 h1 --ipaddress=10.0.0.1/8
+sudo ovs-docker add-port s1 h2-eth0 h2 --ipaddress=10.0.0.2/8
+# Finish 
+sudo ovs-vsctl set-fail-mode s1 secure
+sudo ovs-vsctl show
+
+
+# Create an OVS bridge
+sudo ovs-vsctl add-br s1
+# Add a port from OVS bridge to the Docker Container
+docker run --name h1 --hostname h1 --net=none --rm -ti ubuntu_ping bash
+docker run --name h2 --hostname h2 --net=none --rm -ti ubuntu_ping bash
+# Connect the container to OVS bridge
+sudo ovs-docker add-port s1 h1-eth0 h1 --ipaddress=10.0.0.1/8
+sudo ovs-docker add-port s1 h2-eth0 h2 --ipaddress=10.0.0.2/8
+# Finish 
+sudo ovs-vsctl set-fail-mode s1 secure
+sudo ovs-vsctl show
+
+
+vagrant@docker:~$ sudo ovs-ofctl add-flow s1 idle_timeout=180,priority=33000,in_port=1,actions=output:2
+vagrant@docker:~$ sudo ovs-ofctl add-flow s1 idle_timeout=180,priority=33000,in_port=2,actions=output:1
+vagrant@docker:~$ sudo ovs-ofctl dump-flows s1
+NXST_FLOW reply (xid=0x4):
+ cookie=0x0, duration=13.083s, table=0, n_packets=0, n_bytes=0, idle_timeout=180, idle_age=13, priority=33000,in_port=1 actions=output:2
+ cookie=0x0, duration=5.351s, table=0, n_packets=0, n_bytes=0, idle_timeout=180, idle_age=5, priority=33000,in_port=2 actions=output:1
+
+
+*************************************************** Con controlaador
+
+
+# Create an OVS bridge
+sudo ovs-vsctl add-br s1
+# Add a port from OVS bridge to the Docker Container
+docker run --name h1 --hostname h1 --net=none --rm -ti ubuntu_ping bash
+docker run --name h2 --hostname h2 --net=none --rm -ti ubuntu_ping bash
+# Connect the container to OVS bridge
+sudo ovs-docker add-port s1 h1-eth0 h1 --ipaddress=10.0.0.1/8
+sudo ovs-docker add-port s1 h2-eth0 h2 --ipaddress=10.0.0.2/8
+# Finish 
+sudo ovs-vsctl set-controller s1 tcp:127.0.0.1:6633
+sudo ovs-vsctl set-fail-mode s1 secure
+sudo ovs-vsctl show
+
