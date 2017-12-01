@@ -1,0 +1,81 @@
+https://developer.ibm.com/recipes/tutorials/using-ovs-bridge-for-docker-networking/
+http://ewen.mcneill.gen.nz/blog/entry/2014-10-07-ryu-and-openvswitch-on-docker/
+
+http://www.dockermall.com/use-open-vswitch-in-docker-to-create-a-cross-host-container-network/
+
+http://dept-info.labri.fr/~magoni/rvep/TD-DOCKER-OVS.pdf
+
+https://blog.dekstroza.io/multihost-docker-over-openvswitch/
+http://events.linuxfoundation.org/sites/events/files/slides/LinuxConJapan2014_makita_0.pdf
+https://www.opencloudblog.com/?p=66
+http://iesgn.github.io/ow1/curso/avanzado/openvswitch
+
+https://github.com/moby/moby/issues/8951
+https://mesosphere.com/blog/networking-docker-containers/
+https://blog.russellbryant.net/category/docker/
+
+
+
+apt-cache search bridge-utils
+apt-get install bridge-utils    # Para poder usar el comando brctl 
+
+
+===============================================================================
+git clone https://github.com/gopher-net/docker-ovs-plugin.git
+cd docker-ovs-plugin/plugin
+
+
+docker-compose up -d
+docker-compose ps
+docker network create -d ovs mynet
+docker run -itd --net=mynet --name=web nginx
+docker run -it --rm --net=mynet busybox wget -qO- http://web
+
+
+https://www.tecmint.com/ip-command-examples/
+https://access.redhat.com/sites/default/files/attachments/rh_ip_command_cheatsheet_1214_jcs_print.pdf
+
+wget https://raw.githubusercontent.com/gopher-net/docker-ovs-plugin/master/Dockerfile
+docker build .
+
+
+Ver de docker: https://docs.docker.com/engine/userguide/networking/default_network/build-bridges/
+
+
+sudo ovs-vsctl add-br s1
+ip addr show s1
+
+
+
+
+sudo brctl addbr bridge0
+
+$ sudo ip addr add 192.168.5.1/24 dev bridge0
+
+$ sudo ip link set dev bridge0 up
+
+
+
+
+docker network create -d ovs mynet
+docker-compose ps
+docker network inspect 3114
+
+https://github.com/dockersamples/example-voting-app
+
+https://github.com/faucetsdn/faucet
+https://queue.acm.org/detail.cfm?id=3015763
+
+https://github.com/csieber/hvbench
+https://github.com/amlight/ofp_sniffer
+https://github.com/opencord/voltha/blob/master/compose/docker-compose-ofagent-test.yml
+
+http://wpage.unina.it/rcanonic/didattica/cdn/
+
+http://wpage.unina.it/rcanonic/didattica/cdn/lucidi/CDN-L09-Virtualization-Containers.pdf
+
+http://wpage.unina.it/rcanonic/didattica/cdn/lucidi/CDN-L04-Virtualization.pdf
+
+
+
+http://fbevmware.blogspot.com.co/2013/12/coupling-docker-and-open-vswitch.html
