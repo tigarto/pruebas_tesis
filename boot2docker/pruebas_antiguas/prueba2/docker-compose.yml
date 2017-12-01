@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  kali:
+    image: "kalilinux/kali-linux-docker" 
+    container_name: h1 
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      - mynet
+        
+  ubuntu:
+    image: "ubuntu"
+    container_name: h2  
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      - mynet
+         
+networks:
+  mynet:    
+    driver: ovs
+          
