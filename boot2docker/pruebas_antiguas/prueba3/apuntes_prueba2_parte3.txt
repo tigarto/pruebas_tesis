@@ -1,0 +1,174 @@
+https://aucouranton.com/tag/open-vswitch/
+https://github.com/socketplane/socketplane
+
+http://contiv.github.io/documents/gettingStarted/
+https://media.readthedocs.org/pdf/openvswitch/latest/openvswitch.pdf
+
+
+Veamos si aca esta lo que necesitamos: https://www.joinc.co.kr/w/man/12/docker/ovsplugin
+super importante: https://mesosphere.com/blog/networking-docker-containers/
+
+http://olivier.barais.fr/blog/posts/2015.03.13/docker_opendaylight.html
+http://docs.openvswitch.org/en/latest/howto/docker/
+https://github.com/gopher-net/docker-ovs-plugin
+
+https://doc.lagout.org/security/
+
+-----------------------------------------------------------------
+
+
+version: '3'
+
+services:
+  kali:
+    image: "kalilinux/kali-linux-docker" 
+    container_name: h1 
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      - mynet
+        
+  ubuntu:
+    image: "ubuntu"
+    container_name: h2  
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      - mynet
+         
+networks:
+  mynet: 
+    driver: ovs
+    # internal: true
+    # driver_opts:
+    #   set-controller: tcp:127.0.0.1:6633
+    #   set-fail-mode: secure
+          
+-----------------------------------------------
+
+docker-compose up -d
+docker network ls
+docker network inspect prueba2_mynet
+docker exec -it ovs_ovs_1 sh
+/ # ovs-vsctl show
+/ # ovs-vsctl set-fail-mode ovsbr-f90de secure
+ovs-vsctl list-ifaces <ovsbr-f90de>
+
+ovs-ofctl dump-flows ovsbr-b9438
+
+Cual se conecta a cual??
+
+ovs-vsctl list-ifaces ovsbr-b9438
+ovs-veth0-72fd6    --- h2
+ovs-veth0-7d8cc    ---- h1
+
+---> Con el endpoit id en el docker instect de la red se puede saber que host esta connectado a que instrfaz
+
+ovs-ofctl del-flows ovsbr-b9438
+ovs-ofctl dump-flows ovsbr-b9438
+ovs-vsctl set-fail-mode ovsbr-b9438 secure
+
+docker exec h1 ping -c 2 172.18.0.2
+PING 172.18.0.2 (172.18.0.2) 56(84) bytes of data.
+
+--- 172.18.0.2 ping statistics ---
+2 packets transmitted, 0 received, 100% packet loss, time 1025ms
+
+
+ovs-vsctl list-ports ovsbr-b9438
+
+
+/ # ovs-vsctl list-ports ovsbr-b9438
+ovs-veth0-72fd6
+ovs-veth0-7d8cc
+
+ovs-vsctl list-ports ovsbr-b9438
+ovs-vsctl list-ifaces ovsbr-b9438
+
+ovs-vsctl port-to-br ovsbr-b9438
+
+ovs-ofctl add-flow ovsbr-b9438 in_port=1,actions=output:2
+ovs-ofctl add-flow ovsbr-b9438 in_port=2,actions=output:1
+
+
+ovs-ofctl add-flow ovsbr-b9438 in_port=ovs-veth0-72fd6,actions=output:ovs-veth0-7d8cc --> No
+ovs-ofctl add-flow ovsbr-b9438 in_port=ovs-veth0-7d8cc,actions=output:ovs-veth0-72fd6 -->  No
+ovs-ofctl dump-flows ovsbr-b9438
+
+ovs-vsctl get-controller ovsbr-b9438
+
+
+
+
+
+
+
+ovsbr-b9438
+
+/ # ovs-ofctl dump-flows ovsbr-b9438
+NXST_FLOW reply (xid=0x4):
+ cookie=0x0, duration=34.697s, table=0, n_packets=0, n_bytes=0, idle_age=34, in_port=1 actions=output:2
+ cookie=0x0, duration=19.611s, table=0, n_packets=0, n_bytes=0, idle_age=19, in_port=2 actions=output:1
+
+
+root@kali:/mnt/hgfs/pruebas_tesis/boot2docker/pruebas_antiguas/prueba2# docker exec h1 ping -c 2 172.18.0.2
+PING 172.18.0.2 (172.18.0.2) 56(84) bytes of data.
+64 bytes from 172.18.0.2: icmp_seq=1 ttl=64 time=1.03 ms
+64 bytes from 172.18.0.2: icmp_seq=2 ttl=64 time=0.135 ms
+
+--- 172.18.0.2 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.135/0.586/1.038/0.452 ms
+
+
+
+
+
+/ # ovs-ofctl dump-flows ovsbr-b9438
+NXST_FLOW reply (xid=0x4):
+
+
+
+
+
+
+
+
+
+ovs-vsctl set-controller ovsbr-f90de tcp:127.0.0.1:6633
+docker exec h1 ping -c 2 172.19.0.2
+
+
+docker exec h1
+
+
+http://networkstatic.net/setting-overlays-open-vswitch/
+http://www.pica8.com/document/v2.3/html/ovs-commands-reference/
+ovs-ofctl add-flow <bridge> in_port=<port>,actions=<action>
+
+
+
+**********************************************************************
+https://github.com/mininet/openflow-tutorial/wiki/Learn-Development-Tools
+En el switch:
+
+udo mn --topo single,3 --mac --switch ovsk --controller remote
+
+
+sudo ovs-ofctl show s1
+
+
+ovs-ofctl add-flow s1 in_port=1,actions=output:2
+ovs-ofctl add-flow s1 in_port=2,actions=output:1
+
+
+
+
+
+
+docker pull osrg/ryu
+docker run -it --rm osrg/ryu /bin/bash
+
+
