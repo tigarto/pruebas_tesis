@@ -20,6 +20,10 @@ services:
       - mynet
          
 networks:
-  mynet:    
+  mynet: 
     driver: ovs
+    # internal: true
+    # driver_opts:
+    #   set-controller: tcp:127.0.0.1:6633
+    #   set-fail-mode: secure
           

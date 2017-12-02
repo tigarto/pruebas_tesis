@@ -72,6 +72,20 @@ NXST_FLOW reply (xid=0x4):
 
 
 *************************************************** Con controlaador
+http://docs.openvswitch.org/en/latest/faq/openflow/
+http://openvswitch.org/support/dist-docs/ovs-ofctl.8.txt
+http://openvswitch.org/support/dist-docs/ovs-vsctl.8.txt
+http://www.pica8.com/document/v2.3/pdf/ovs-commands-reference.pdf
+http://docs.openvswitch.org/en/latest/faq/openflow/
+http://www.pica8.com/document/v2.3/pdf/ovs-commands-reference.pdf
+https://emsi.wordpress.com/2015/05/19/using-openvswitch-to-connect-docker-contianers-across-the-network/
+https://www.trueneutral.eu/2017/docker-networking.html
+https://www.trueneutral.eu/2017/docker-networking.html
+https://wiki.opendaylight.org/view/OVSDB:Integration_Testing
+https://blog.pavelsklenar.com/how-to-install-and-use-docker-on-synology/
+https://sreeninet.wordpress.com/2015/05/31/docker-compose-and-docker-machine-swarm-compose-interworking/
+https://media-glass.es/docker-machine-compose-swarm-4180ceff6afa
+
 
 
 # Create an OVS bridge
@@ -86,4 +100,60 @@ sudo ovs-docker add-port s1 h2-eth0 h2 --ipaddress=10.0.0.2/8
 sudo ovs-vsctl set-controller s1 tcp:127.0.0.1:6633
 sudo ovs-vsctl set-fail-mode s1 secure
 sudo ovs-vsctl show
+
+cd /usr/local/lib/python2.7/dist-packages/ryu/app
+pwd
+ryu-manager --verbose simple_switch
+----------------------------
+
+networks:
+  mynet:    
+    driver: ovs
+
+
+"IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        },
+
+https://runnable.com/docker/docker-compose-networking
+
+networks:
+    front:
+        # use the bridge driver, but enable IPv6
+        driver: bridge
+        driver_opts:
+            com.docker.network.enable_ipv6: "true"
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.16.238.0/24
+                gateway: 172.16.238.1
+                - subnet: "2001:3984:3989::/64"
+                gateway: "2001:3984:3989::1"
+    back:
+        # use a custom driver, with no options
+        driver: custom-driver-1
+
+//////////////////////////////////////////////////////////////////////////
+
+https://github.com/docker/compose/issues/4195
+https://blog.docker.com/2016/12/understanding-docker-networking-drivers-use-cases/
+http://container42.com/2015/10/30/docker-networking-reborn/
+https://github.com/hubo1016/vlcp-docker-plugin
+
+http://docs.openvswitch.org/en/latest/howto/docker/
+
+http://openvswitch.org/support/ovscon2015/17/0910-williams.pdf
+
+
+
+
+
 
