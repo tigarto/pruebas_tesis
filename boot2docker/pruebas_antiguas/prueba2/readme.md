@@ -1,15 +1,19 @@
 Pruebas
 ===================
 
-A continuación se describe de manera somera y sin correcciones posteriores el proceso llevado a cabo para configurar la topologia de test.
-> **Nota:**
-> Aca el test solo se preocupa por la conectividad entre los diferentes elementos de la red. Todavia no se hace enfasís en el montaje del test.
+A continuación se describe de manera somera y sin correcciones posteriores el proceso llevado a cabo para configurar la topologia de test. El objetivo de estos ensayos es realizar el montaje empleando como medio de conexion switch virtual con driver ovs (open-vswitch) y no con driver bridge (como se hizo en los casos anteriormente descritos). Una vez se tenga correctamente la topologia funcional, el siguiente paso consiste en agregar de forma manual reglas al swich ovs para permitir la conectividad entre los containers.
 
-Prueba 1
+> **Nota:**
+> Aca el test solo se preocupa por la conectividad entre los diferentes elementos de la red. Todavia no se hace enfasís en el montaje del test definitivo.
 --------------
+#####  Descripción de la topologia
 La siguiente figura muestra la topología a montar:
 
-![Montaje 1](test1.png?raw=true "Experimento 1")
+![Montaje 1](test1?raw=true "Experimento empleando un swith ovs")
+
+
+
+![Montaje 1](test-sin-controlador.png?raw=true "Experimento sin controlador")
 
 ####  Caso 1: Topologia empleando driver bridge
 
