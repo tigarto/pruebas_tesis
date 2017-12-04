@@ -26,6 +26,9 @@ La siguiente figura muestra la topología a montar:
 
 #####  Comandos
 Solo basta con aplicar los comandos mas basicos de docker. Para el caso, los dos contenedores quedan automaticamente conectados.
+
+
+sssss
 ```
 # Creando los contenedores
 # Container h1
