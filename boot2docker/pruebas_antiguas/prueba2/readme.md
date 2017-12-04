@@ -9,11 +9,24 @@ A continuación se describe de manera somera y sin correcciones posteriores el p
 #####  Descripción de la topologia
 La siguiente figura muestra la topología a montar:
 
-![Montaje 1](test1?raw=true "Experimento empleando un swith ovs")
+![Montaje 1](test-con-switch-ovs.png?raw=true "Experimento empleando un swith ovs")
+
+La siguiente tabla detalla las caracteristicas de los containers que funcionan como hosts:
+
+| Host     | Interfaz | IP   | Imagen |
+| :-------: | ----: | :---: | :--: |
+| h1 | ? |  ? | kalilinux/kali-linux-docker| 
+| h2 | ? |  ? | ubuntu |
+
+En lo que respecta al switch que los conectara la siguiente tabla define las caracteristicas:
+
+| switch     | Driver | Uso de Openflow  | 
+| :-------: | ----: | :---: |
+| s1 | ovs |  No |
 
 
 
-![Montaje 1](test-sin-controlador.png?raw=true "Experimento sin controlador")
+![Montaje 2](test-sin-controlador.png?raw=true "Experimento sin controlador")
 
 ####  Caso 1: Topologia empleando driver bridge
 
