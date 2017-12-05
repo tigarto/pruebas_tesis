@@ -18,8 +18,8 @@ La siguiente tabla detalla las caracteristicas de los containers que funcionan c
 
 | Host     | Interfaz | IP   | Imagen |
 | :-------: | ----: | :---: | :--: |
-| h1 | ? |  ? | kalilinux/kali-linux-docker| 
-| h2 | ? |  ? | ubuntu |
+| h1 | ? |  10.0.0.1 | kalilinux/kali-linux-docker| 
+| h2 | ? |  10.0.0.2 | ubuntu |
 
 En lo que respecta al switch que conectará los containers la siguiente tabla define las caracteristicas:
 
@@ -74,6 +74,27 @@ ping -c 4 IP(h2)
 ping -c 4 IP(h1)
 ```
 #### Caso 2: Topologia empleando driver switch ovs que funciona como container de docker
+En este caso se hizo uso de la solución **docker-ovs-plugin** disponible en https://github.com/gopher-net/docker-ovs-plugin. 
+Inicialmente se siguieron las instrucciones alli mostradas y se verificó el correcto funcionamiento del pluging una vez instalado. 
+Posteriormente se procedio a realizar el montaje de la topologia de test. Las caracteristicas de la red a probar se muestran a continuacion:
+
+| Host     | Interfaz | IP   | Imagen |
+| :-------: | ----: | :---: | :--: |
+| h1 | ? |  ? | kalilinux/kali-linux-docker| 
+| h2 | ? |  ? | ubuntu |
+
+En lo que respecta al switch que conectará los containers la siguiente tabla define las caracteristicas:
+
+| switch    | Driver | Uso de Openflow  | 
+| :-------: | ----: | :---: |
+| s1 | ovs |  No |
+
+Inicialmente se procede a codificar el archivo siguiente archivo en docker-compose:
+
+
+
+
+
 
 https://github.com/socketplane/docker-ovs
 No esta definida aun, 
