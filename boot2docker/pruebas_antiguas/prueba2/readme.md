@@ -89,10 +89,112 @@ En lo que respecta al switch que conectará los containers la siguiente tabla de
 | :-------: | ----: | :---: |
 | s1 | ovs |  No |
 
-Inicialmente se procede a codificar el archivo siguiente archivo en docker-compose:
+Inicialmente se procede a codificar el archivo siguiente archivo en docker-compose, en el caso se llamara docker-compose-tb2.yml y su contenido sera el siguiente:
+
+```
+version: '3'
+
+services:
+  kali:
+    image: "kalilinux/kali-linux-docker" 
+    container_name: h1 
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      - mynet
+        
+  ubuntu:
+    image: "ubuntu"
+    container_name: h2  
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+    networks:
+      - mynet
+         
+networks:
+  mynet: 
+    driver: ovs
+```
+
+Una vez codificado el archivo anterior se guarda. Antes de proceder a realizar el montaje se asumen los siguietes supuestos:
+- El archivo **docker-compose.yml** asociado a la creacion del **docker-ovs-plugin** se encuentra en: OVS-PLUGING-DIR.
+- El archivo **docker-compose-tb2.yml** se encuentra en TB2-DIR.
+
+Los pasos de puesta en marcha son los siguientes:
+1. Verifique que los contenedores asociados a **docker-ovs-plugin** esten en marcha. Si no lo estan corra el archivo docker-compose asociado a estos:
+
+```
+# Reiniciar el openvswitch
+/etc/init.d/openvswitch-switch restart
+# Verificando que los contenedores esten en marcha
+docker ps
+# Accediendo al directorio donde esta el archivo docker-compose del docker-ovs-plugin (Si no esta en marcha este plugin)
+cd OVS-PLUGING-DIR
+# Creando los contenedores asociados a docker-ovs-plugin
+docker-compose up -d
+# Verificando los conetenedores recien creados
+docker ps
 
 
+```
+2. Crear una red asociada a este driver:
+```
+# Creacion de la red
+docker network create -d ovs mynet
+# Verificando la red recien creada
+docker network ls
+```
 
+3. Ingresar al directorio TB2-DIR y arrancar la topologia:
+
+```
+# Accediendo al directorio donde esta el archivo docker-compose de la topologia
+cd OVS-PLUGING-DIR
+# Creando los contenedores asociados a docker-ovs-plugin
+docker-compose -f docker-compose-tb2.yml up -d
+# Verificando los conetenedores recien creados
+docker ps
+```
+4. Inspeccionando los contenedores y la red recien creados:
+```
+# Inspeccionando los contenedores
+docker ps
+# Inspeccionando las redes (Nota: Para el caso se crea una red de nombre OVS-PLUGING-DIR_mynet)
+docker network ls
+# Verificando los conetenedores recien creados
+docker network inspect
+```
+En el caso al realizar el inspect de la red se llego a que para el caso las IPs de los contenedores creados eran:
+
+| Host     | Interfaz | 
+| :-------: | ----: | 
+| h1 | 172.20.0.2 | 
+| h2 | 172.20.0.3| 
+
+5. Verificando conectividad entre los contenedores: Para el caso solo se probo de con un ping de h1 a h2
+```
+# Inspeccionando los contenedores
+docker exec h1 ping -c 2 172.20.0.3
+```
+Si todo esta bien debera haber respuesta. Si se quieren hacer diferente tipo de pruebas, es posible acceder a las consolas de los contenedores usando el comando **attach**, la idea es ejecutar este comando en dos consolas diferentes pues una vez este se pone en marcha, el control de la consola pasa al contenedor:
+```
+# Accediendo al contenedor h1 (Hacerlo en una consola nueva)
+docker attach h1
+# Accediendo al contenedor h2 (Hacerlo en una consola nueva - distinta a la anterior)
+docker attach h2
+```
+Con el comando **exit** nos salimos de las consolas. Finalmente para dar de baja la topologia se emplea el siguiente comando 
+en el directorio OVS-PLUGING-DIR:
+```
+# Dando de baja la topologia
+docker-compose -f docker-compose-tb2.yml down
+# Verificando que los conetenedores se hayan dado de baja
+docker ps
+# Verificando que la red se haya dado de baja
+docker network ls
+```
 
 
 
