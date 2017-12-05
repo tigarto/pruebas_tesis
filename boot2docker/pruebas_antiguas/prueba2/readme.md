@@ -11,6 +11,9 @@ La siguiente figura muestra la topología a montar:
 
 ![Montaje 1](test-con-switch-ovs.png?raw=true "Experimento empleando un swith ovs")
 
+
+####  Caso 1: Topologia empleando driver ovs por medio de linea de comandos
+
 La siguiente tabla detalla las caracteristicas de los containers que funcionan como hosts:
 
 | Host     | Interfaz | IP   | Imagen |
@@ -18,11 +21,57 @@ La siguiente tabla detalla las caracteristicas de los containers que funcionan c
 | h1 | ? |  ? | kalilinux/kali-linux-docker| 
 | h2 | ? |  ? | ubuntu |
 
-En lo que respecta al switch que los conectara la siguiente tabla define las caracteristicas:
+En lo que respecta al switch que conectará los containers la siguiente tabla define las caracteristicas:
 
 | switch     | Driver | Uso de Openflow  | 
 | :-------: | ----: | :---: |
 | s1 | ovs |  No |
+
+En este caso, el switch no necesitara del controlador para permitir la comunicación entre los containers por lo 
+tanto, el funcionamiento de este ejemplo sera similar a los diferentes casos de test realizados en la prueba 1. La guia de los comandos 
+aplicados para esta tarea se encuentra mas detalladamente en cualquiera de las siguientes 2 URL:
+- http://containertutorials.com/network/ovs_docker.html
+- https://developer.ibm.com/recipes/tutorials/using-ovs-bridge-for-docker-networking/
+
+Asumiendo que ya se tiene instalado el ovs-docker, los comandos ejecutados para llevar a cabo el montaje de la topologia fueron
+los siguientes:
+
+```
+# 1. Se agrega el switch virtual y sus interfaces 
+sudo ovs-vsctl add-br s1
+
+# 2. Se verifica que el switch haya sido creado
+sudo ovs-vsctl list-br                      # Listando los switchs existentes
+sudo ovs-vsctl show                         # Mostrando informacion resumida de los switches existentes
+sudo ovs-vsctl list-ifaces s1               # Listando las interfaces del switch 
+
+# 3. Se crean los contenedores
+# Poner a correr las 2 imagenes en dos consolas diferentes si no se coloca en modo detach (ejecucion en background) 
+docker run -it --name=h1 --net=none kalilinux/kali-linux-docker /bin/bash 
+docker run -it --name=h2 --net=none ubuntu /bin/bash 
+
+# 4. Se verifica que los contanedores esten corriendo 
+docker ps
+docker inspect --format '{{ .NetworkSettings.IPAddress }}' h1
+docker inspect --format '{{ .NetworkSettings.IPAddress }}' h2
+
+# 4. Se conectan los contenedores al switch ovs
+ovs-docker add-port s1 h1-eth0 h1 --ipaddress=10.0.0.1/8 
+ovs-docker add-port s1 h2-eth0 h2 --ipaddress=10.0.0.2/8 
+
+# 4. Test the connection between two containers connected via OVS bridge using Ping command
+en h1: ifconfig ---> Se puede ver la Ip es la que esperamis
+```
+Para verificar que la conexion entre los contenedores este bien, se ejecutan los comandos de conectividad (ping) desde cada una de las 
+consolas de los contenedores si los contenedores lo tienen instalado. La idea es que por lo menos un contenedor lo tenga instalado.
+
+```
+# ping h1 -> h2 (Esto se hace en la consola de h1)
+ping -c 4 IP(h2)
+
+# ping h2 -> h1 (Esto se hace en la consola de h2)
+ping -c 4 IP(h1)
+```
 
 
 
