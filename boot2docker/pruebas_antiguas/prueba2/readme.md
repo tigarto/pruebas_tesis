@@ -46,7 +46,8 @@ sudo ovs-vsctl show                         # Mostrando informacion resumida de 
 sudo ovs-vsctl list-ifaces s1               # Listando las interfaces del switch 
 
 # 3. Se crean los contenedores
-# Poner a correr las 2 imagenes en dos consolas diferentes si no se coloca en modo detach (ejecucion en background) 
+# Poner a correr las 2 imagenes en dos consolas diferentes si no se coloca en modo 
+# detach (ejecucion en background) 
 docker run -it --name=h1 --net=none kalilinux/kali-linux-docker /bin/bash 
 docker run -it --name=h2 --net=none ubuntu /bin/bash 
 
@@ -72,8 +73,24 @@ ping -c 4 IP(h2)
 # ping h2 -> h1 (Esto se hace en la consola de h2)
 ping -c 4 IP(h1)
 ```
+#### Caso 2: Topologia empleando driver switch ovs que funciona como container de docker
 
+https://github.com/socketplane/docker-ovs
+No esta definida aun, 
+para el caso dado se tienen las ips generadas aleatoriamente
+ver el archivo: dockercompose.yml
 
+#### Caso 3: Topologia empleando driver switch ovs que funciona como container de docker
+https://github.com/socketplane/docker-ovs
+No esta definida aun, 
+para el caso dado se tienen las ips generadas de manera definida.
+ver el archivo: dockercompose.yml
+
+#### Caso 4: Topologia empleando driver switch tomando el caso 3 y modificandolo para usar openflow
+https://github.com/socketplane/docker-ovs
+No esta definida aun, 
+para el caso dado se tienen las ips generadas de manera definida.
+ver el archivo: dockercompose.yml
 
 ![Montaje 2](test-sin-controlador.png?raw=true "Experimento sin controlador")
 
