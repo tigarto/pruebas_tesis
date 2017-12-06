@@ -50,6 +50,11 @@ sudo ovs-vsctl set-fail-mode s1 secure
 sudo ovs-vsctl show
 
 
+
+docker run --name h1 --hostname h1 --rm -ti kalilinux/kali-linux-docker /bin/bash 
+docker run --name h2 --hostname h2 --rm -ti ubuntu /bin/bash 
+
+
 # Create an OVS bridge
 sudo ovs-vsctl add-br s1
 # Add a port from OVS bridge to the Docker Container
