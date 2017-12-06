@@ -1,0 +1,25 @@
+FROM kalilinux/kali-linux-docker
+# Set one or more individual labels
+LABEL com.example.version="0.0.1-beta"
+LABEL vendor="ACME Incorporated"
+LABEL com.example.release-date="2015-02-12"
+LABEL com.example.version.is-production=""
+
+RUN echo "Hola mundo" \
+    echo "Hola mundo"  
+
+# Set environment variables.
+ENV HOME /root
+
+# Define working directory.
+WORKDIR /root
+
+# Usage: ENTRYPOINT application "argument", "argument", ..
+# Remember: arguments are optional. They can be provided by CMD
+#           or during the creation of a container. 
+ENTRYPOINT echo
+
+# Usage example with CMD:
+# Arguments set with CMD can be overridden during *run*
+CMD "Hello docker!"
+ENTRYPOINT echo  

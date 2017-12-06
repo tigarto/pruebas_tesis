@@ -1,0 +1,37 @@
+http://goinbigdata.com/docker-run-vs-cmd-vs-entrypoint/
+https://til.codes/docker-run-vs-cmd-vs-entrypoint/
+
+https://stackoverflow.com/questions/43974888/run-script-after-container-entrypoint-in-docker-compose
+https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-and-phpmyadmin-with-docker-compose-on-ubuntu-14-04
+
+https://stackoverflow.com/questions/37194733/how-can-i-make-my-docker-compose-wait-for-it-script-invoke-the-original-contai
+
+Ver:
+https://docs.microsoft.com/en-us/dotnet/standard/microservices-architecture/multi-container-microservice-net-applications/multi-container-applications-docker-compose
+
+https://devhints.io/docker-compose
+
+https://circleci.com/docs/2.0/docker-compose/
+
+
+https://vsupalov.com/docker-env-vars/
+
+Remove images none:
+https://forums.docker.com/t/how-to-remove-none-images-after-building/7050/2
+docker images -f "dangling=true" -q
+
+https://www.digitalocean.com/community/tutorials/docker-explained-using-dockerfiles-to-automate-building-of-images
+
+https://github.com/dockerfile/java/tree/master/oracle-java7
+http://dockerfile.github.io/#/ubuntu
+
+
+
+http://odewahn.github.io/docker-jumpstart/building-images-with-dockerfiles.html
+
+
+https://github.com/kstaken/dockerfile-examples
+
+docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
+
+https://github.com/webdevops/Dockerfile

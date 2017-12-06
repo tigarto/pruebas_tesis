@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  kali:
+    image: "kalilinux/kali-linux-docker" 
+    container_name: h1 
+
+    hostname: h1 
+    entrypoint: /bin/bash
+    stdin_open: true
+    tty: true  
+
+        
+# Refernecias:
+# -> Hostname: 
+#    * https://stackoverflow.com/questions/29924843/how-do-i-set-hostname-in-docker-compose
