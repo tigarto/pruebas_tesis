@@ -39,8 +39,9 @@ los siguientes:
 ```
 # 0. Se arranca el openswitch (Se hace cuando el comando 1 no da)
 sudo /etc/init.d/openvswitch-switch start
-# 1. Se agrega el switch virtual y sus interfaces 
+# 1. Se agrega el switch virtual y sus interfaces y se configura
 sudo ovs-vsctl add-br s1
+ifconfig s1 10.0.0.1 netmask 255.255.255.0 up
 
 # 2. Se verifica que el switch haya sido creado
 sudo ovs-vsctl list-br                      # Listando los switchs existentes
@@ -50,8 +51,8 @@ sudo ovs-vsctl list-ifaces s1               # Listando las interfaces del switch
 # 3. Se crean los contenedores
 # Poner a correr las 2 imagenes en dos consolas diferentes si no se coloca en modo 
 # detach (ejecucion en background) 
-docker run -it --name=h1 --net=none kalilinux/kali-linux-docker /bin/bash 
-docker run -it --name=h2 --net=none ubuntu /bin/bash 
+docker run --name h1 --hostname h1 --net=none --rm -ti kalilinux/kali-linux-docker /bin/bash 
+docker run --name h2 --hostname h2 --net=none --rm -ti ubuntu /bin/bash 
 
 # 4. Se verifica que los contanedores esten corriendo 
 docker ps
@@ -59,8 +60,8 @@ docker inspect --format '{{ .NetworkSettings.IPAddress }}' h1
 docker inspect --format '{{ .NetworkSettings.IPAddress }}' h2
 
 # 4. Se conectan los contenedores al switch ovs
-ovs-docker add-port s1 h1-eth0 h1 --ipaddress=10.0.0.1/8 
-ovs-docker add-port s1 h2-eth0 h2 --ipaddress=10.0.0.2/8 
+ovs-docker add-port s1 h1-eth0 h1 --ipaddress=10.0.0.2/8 
+ovs-docker add-port s1 h2-eth0 h2 --ipaddress=10.0.0.3/8 
 
 # 5. Se verifica nuevamente la informacion asociada al switch
 sudo ovs-vsctl list-br                      # Listando los switchs existentes
@@ -163,9 +164,8 @@ PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
 4 packets transmitted, 4 received, 0% packet loss, time 3052ms
 rtt min/avg/max/mdev = 0.090/0.506/1.705/0.692 ms
 ```
-Para culminar la prueba, nos salimos de los contenedores inicialmente con el comando **exit** posteriormente
-los eliminamos; luego, procedemos a eliminar la instancia del switch ovs creado tal y como se muestran en los 
-siguientes comandos:
+Para culminar la prueba, nos salimos de los contenedores inicialmente con el comando **exit**. Luego, procedemos
+a eliminar la instancia del switch ovs creado tal y como se muestran en los siguientes comandos:
 ```
 # Eliminando los contenedores
 docker rm h1
