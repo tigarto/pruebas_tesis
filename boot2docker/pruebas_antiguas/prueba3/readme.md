@@ -9,7 +9,7 @@ A continuación se describe de manera somera y sin correcciones posteriores el p
 #####  Descripción de la topologia
 La siguiente figura muestra la topología a montar:
 
-![Montaje 1](test-con-switch-ovs.png?raw=true "Experimento empleando un swith ovs")
+![Montaje 1](test-sin-controlador.png?raw=true "Experimento empleando un swith ovs usando el protocolo OpenFlow")
 
 
 ####  Caso 1: Topologia empleando driver ovs por medio de linea de comandos
@@ -37,6 +37,8 @@ Asumiendo que ya se tiene instalado el ovs-docker, los comandos ejecutados para 
 los siguientes:
 
 ```
+# 0. Se arranca el openswitch (Se hace cuando el comando 1 no da)
+sudo /etc/init.d/openvswitch-switch start
 # 1. Se agrega el switch virtual y sus interfaces 
 sudo ovs-vsctl add-br s1
 
@@ -60,19 +62,122 @@ docker inspect --format '{{ .NetworkSettings.IPAddress }}' h2
 ovs-docker add-port s1 h1-eth0 h1 --ipaddress=10.0.0.1/8 
 ovs-docker add-port s1 h2-eth0 h2 --ipaddress=10.0.0.2/8 
 
-# 4. Test the connection between two containers connected via OVS bridge using Ping command
-en h1: ifconfig ---> Se puede ver la Ip es la que esperamis
+# 5. Se verifica nuevamente la informacion asociada al switch
+sudo ovs-vsctl list-br                      # Listando los switchs existentes
+sudo ovs-vsctl show                         # Mostrando informacion resumida de los switches existentes
+sudo ovs-vsctl list-ifaces s1               # Listando las interfaces del switch 
 ```
-Para verificar que la conexion entre los contenedores este bien, se ejecutan los comandos de conectividad (ping) desde cada una de las 
-consolas de los contenedores si los contenedores lo tienen instalado. La idea es que por lo menos un contenedor lo tenga instalado.
-
+Para el caso resaltamos la salida del comando **sudo ovs-vsctl show**
+```
+root@kali:~# ovs-vsctl show 
+822290ff-8ad5-49c0-87d2-b06efc249250
+    Bridge "s1"
+        Port "s1"
+            Interface "s1"
+                type: internal
+        Port "10d9d662d8404_l"
+            Interface "10d9d662d8404_l"
+        Port "feaeb61434ac4_l"
+            Interface "feaeb61434ac4_l"
+    ovs_version: "2.6.2"
+```
+Como se puede notar ya existen dos interfaces cada conectada a los containers previamente creados. 
+> **Nota:**
+> No se cual contenedor va a cual interface (Como solucion hubiera ejecutado el comando ovs-vsctl despues de crear
+la conexion).
+Ahora vamos a proceder a cambiar el modo de operacion del switch ovs para que se comporte como un switch openflow:
+```
+ovs-vsctl set-fail-mode s1 secure
+```
+Nuevamente miramos la salida del comando **sudo ovs-vsctl show**
+```
+root@kali:~# ovs-vsctl show 
+822290ff-8ad5-49c0-87d2-b06efc249250
+    Bridge "s1"
+        fail_mode: secure
+        Port "s1"
+            Interface "s1"
+                type: internal
+        Port "10d9d662d8404_l"
+            Interface "10d9d662d8404_l"
+        Port "feaeb61434ac4_l"
+            Interface "feaeb61434ac4_l"
+    ovs_version: "2.6.2"
+```
+Vamos a verificar la conexion entre los containers. Tengase en cuenta que para que funcione el comando ping se deberan 
+tener las netools instaladas
 ```
 # ping h1 -> h2 (Esto se hace en la consola de h1)
-ping -c 4 IP(h2)
+ping -c 4 10.0.0.2   # IP(h2) = 10.0.0.2
 
 # ping h2 -> h1 (Esto se hace en la consola de h2)
-ping -c 4 IP(h1)
+ping -c 4 10.0.0.1 # IP(h1) = 10.0.0.1
 ```
+Vemos que no hay conectividad (haciendo el ping **h1 -> h2**):
+```
+root@fdeffa857174:/# ping -c 4 10.0.0.2
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+From 10.0.0.1 icmp_seq=1 Destination Host Unreachable
+From 10.0.0.1 icmp_seq=2 Destination Host Unreachable
+From 10.0.0.1 icmp_seq=3 Destination Host Unreachable
+From 10.0.0.1 icmp_seq=4 Destination Host Unreachable
+
+--- 10.0.0.2 ping statistics ---
+4 packets transmitted, 0 received, +4 errors, 100% packet loss, time 3070ms
+pipe 4
+root@fdeffa857174:/# 
+```
+Si se ejecuta el comando **ovs-ofctl dump-flows NOMBRE_SWITCH** se podra notar que no hay flujos instalados, por ello
+no hay conexion:
+```
+root@kali:~# ovs-ofctl dump-flows s1
+NXST_FLOW reply (xid=0x4):
+```
+Procediendo a instalar dos flujos empleamos los siguientes comandos
+```
+ovs-ofctl add-flow s1 in_port=1,actions=output:2
+ovs-ofctl add-flow s1 in_port=2,actions=output:1
+```
+> **Nota:**
+> Para mas informacion puede ver los siguientes enlaces:
+> - http://www.pica8.com/document/v2.3/html/ovs-commands-reference/
+
+Nuevamente si se lista la tabla de flujos el resultado sera el siguiente:
+```
+root@kali:~# ovs-ofctl dump-flows s1
+NXST_FLOW reply (xid=0x4):
+ cookie=0x0, duration=4.808s, table=0, n_packets=0, n_bytes=0, idle_age=4, in_port=1 actions=output:2
+ cookie=0x0, duration=1.871s, table=0, n_packets=0, n_bytes=0, idle_age=1, in_port=2 actions=output:1
+```
+Como ya existe en el switch los flujos que dicen que hacer con hacer con los paquetes que llegan
+al switch ovs se puede notar que ya es posible el ping entre los contenedore tal y como se muestra a continuacion:
+```
+root@fdeffa857174:/# ping -c 4 10.0.0.2
+PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.
+64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=1.70 ms
+64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=0.110 ms
+64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=0.090 ms
+64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=0.121 ms
+
+--- 10.0.0.2 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3052ms
+rtt min/avg/max/mdev = 0.090/0.506/1.705/0.692 ms
+```
+Para culminar la prueba, nos salimos de los contenedores inicialmente con el comando **exit** posteriormente
+los eliminamos; luego, procedemos a eliminar la instancia del switch ovs creado tal y como se muestran en los 
+siguientes comandos:
+```
+# Eliminando los contenedores
+docker rm h1
+docker rm h2
+# Eliminando el switch
+ovs-vsctl del-br s1
+# Verificando que el switch haya sido eliminado
+ovs-vsctl show
+```
+
+**----------------------------------------> Aca vamos **
+
 #### Caso 2: Topologia empleando driver switch ovs que funciona como container de docker
 En este caso se hizo uso de la solución **docker-ovs-plugin** disponible en https://github.com/gopher-net/docker-ovs-plugin. 
 Inicialmente se siguieron las instrucciones alli mostradas y se verificó el correcto funcionamiento del pluging una vez instalado. 
